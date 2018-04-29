@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.danielakua.dbapp.TablesList">
+
+    <Button
+        android:id="@+id/addTableTableslist"
+        android:layout_width="78dp"
+        android:layout_height="68dp"
+        android:background="@android:drawable/ic_input_add"
+        android:onClick="CreateTableClick"
+        app:layout_constraintBottom_toBottomOf="@+id/titleTableslist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/titleTableslist"
+        app:layout_constraintTop_toTopOf="@+id/titleTableslist" />
+
+    <TextView
+        android:id="@+id/titleTableslist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/title_tables"
+        android:textAlignment="center"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tableTableslist"
+        app:layout_constraintEnd_toStartOf="@+id/addTableTableslist"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tableTableslist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/table"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tables"
+        app:layout_constraintEnd_toStartOf="@+id/actionTableslist"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleTableslist" />
+
+    <TextView
+        android:id="@+id/actionTableslist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/actions"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tableTableslist"
+        app:layout_constraintTop_toTopOf="@+id/tableTableslist" />
+
+    <ListView
+        android:id="@+id/tables"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableTableslist" />
+
+</android.support.constraint.ConstraintLayout>
