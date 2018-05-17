@@ -13,7 +13,6 @@ public class RecordsPageActivity extends AppCompatActivity {
 
     public StringBuilder logger = LogsPageActivity.logger; // logger instance
     protected final String TAG = "Records Page:";// logger tag
-    protected RecordsDB db;// database instance
     ArrayList<Record> records = new ArrayList<>();
 
     @Override
@@ -23,7 +22,6 @@ public class RecordsPageActivity extends AppCompatActivity {
 
         Log("Entered Records Page");
 
-        db = new RecordsDB(this);
         getRecords();
     }
 
@@ -41,7 +39,7 @@ public class RecordsPageActivity extends AppCompatActivity {
                 response = response.trim();
                 String[] scores = response.split("\n");
                 for(String score : scores){
-                    records.add(new Record(score.split(",")[0], score.split(",")[1]));
+                    records.add(new Record(score.split(",")[0], Double.parseDouble(score.split(",")[1])));
                 }
                 loadRecords();
             }
@@ -57,19 +55,19 @@ public class RecordsPageActivity extends AppCompatActivity {
         {
             public int compare(Record o1, Record o2)
             {
-                int o1I = Integer.parseInt(o1.get_score());
-                int o2I = Integer.parseInt(o2.get_score());
-                return o1I > o2I ? -1 : o1I == o2I ? 0 : 1;
+                Double o1I = o1.get_score();
+                Double o2I = o2.get_score();
+                return o1I > o2I ? -1 : o1I < o2I ? 1 : 0;
             }
         });
 
         // keep top 20 scores
         int limit = records.size();
-        int max = 20;
-        if ( limit > max )
-            records.subList(max, limit).clear();
-
-        Log(String.format("Displaying top %d scores", max));
+//        int max = 20;
+//        if ( limit > max )
+//            records.subList(max, limit).clear();
+//
+//        Log(String.format("Displaying top %d scores", max));
 
         // show scores in list view
         ListView listView = findViewById(R.id.records);

@@ -89,6 +89,7 @@ class AddAdapter extends BaseAdapter
             EditText entryValue = rowView.findViewById(R.id.entryValue);
             if(entry.get_type().equals("INTEGER")){
                 entryValue.setInputType(InputType.TYPE_CLASS_NUMBER);
+                entry.set_value("0");
             }
             entryValue.setText(entry.get_value());
             entryValue.addTextChangedListener(new TextWatcher() {

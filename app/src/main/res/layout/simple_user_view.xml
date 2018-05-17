@@ -10,7 +10,7 @@
 
         android:layout_weight="1"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/entryPW"

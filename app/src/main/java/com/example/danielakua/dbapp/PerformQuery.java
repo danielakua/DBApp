@@ -67,6 +67,18 @@ public class PerformQuery extends AsyncTask<String, String, String>
             case "columns":
                 response = performGetColumns(params);
                 break;
+            case "getColumns":
+                response = performGetColumnValue(params);
+                break;
+            case "addColumn":
+                response = performAddColumn(params);
+                break;
+            case "addColumns":
+                response = performAddColumns(params);
+                break;
+            case "updateColumn":
+                response = performUpdateColumn(params);
+                break;
             case "checkApply":
                 response = String.valueOf(checkApplied(params));
                 break;
@@ -97,8 +109,11 @@ public class PerformQuery extends AsyncTask<String, String, String>
             case "getScore":
                 response = getScore(params);
                 break;
+            case "getAllInfo":
+                response = performAllFromTable(params);
+                break;
             case "getAllUsers":
-                response = performGetAllFromTable(params);
+                response = performKeysFromTable(params);
                 break;
         }
 
@@ -139,6 +154,83 @@ public class PerformQuery extends AsyncTask<String, String, String>
 
     }
 
+//    private int getRowsCount(String table){
+//        int response;
+//        try {
+//            String query = String.format("SELECT COUNT(*) AS rowcount FROM %s;", table);
+//            ResultSet rs = stmt.executeQuery(query);
+//            rs.next();
+//            response = rs.getInt("rowcount");
+//            rs.close();
+//        }
+//        catch (Exception e){
+//            response = 0;
+//            e.printStackTrace();
+//        }
+//        return response;
+//    }
+
+    private String performAddColumn(String... params) {
+        String response;
+        String table = params[0];
+        String col = params[1];
+        String type = params[2];
+        try{
+            String query = String.format("ALTER TABLE %s ADD COLUMN %s %s;", table, col, type);
+            System.out.println(query);
+            stmt.executeUpdate(query);
+            response = String.format("added column %s to table %s", col, table);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            response = "server error";
+        }
+        return response;
+    }
+
+    private String performAddColumns(String... params){
+        String response;
+        String table = params[0];
+        try {
+            String columns = performGetColumns(table);
+            for (int i = 1; i < params.length; i++) {
+                if(columns.contains(params[i] + " " + params[i + 1])){
+                    i++;
+                    continue;
+                }
+                performAddColumn(table, params[i++], params[i]);
+            }
+            response = "Added successfully";
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            response = "server error";
+        }
+        return response;
+    }
+
+    private String performUpdateColumn(String... params){
+        String response;
+        String table = params[0];
+        String col = params[1];
+        String pkey = getPrimaryKey(table);
+        StringBuilder query = new StringBuilder(String.format("UPDATE %s SET %s = CASE %s ", table, col, pkey));
+        for(int i = 2; i < params.length; i++){
+            query.append(String.format("WHEN '%s' THEN %s ", params[i++], params[i]));
+        }
+        query.append("END");
+        try {
+            System.out.println(query.toString());
+            stmt.executeUpdate(query.toString());
+            response = "updated successfully";
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            response = "server error";
+        }
+        return response;
+    }
+
     private String performGetColumns(String... params){
         StringBuilder response = new StringBuilder("");
         String table = params[0];
@@ -153,6 +245,41 @@ public class PerformQuery extends AsyncTask<String, String, String>
                 String type = rsmd.getColumnTypeName(i);
                 response.append(String.format("%s %s%n", name, type));
             }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            response.append("server error");
+        }
+        return response.toString();
+    }
+
+    private String performGetColumnValue(String... params){
+        StringBuilder response = new StringBuilder("");
+        String table = params[0];
+        String pkey = getPrimaryKey(table);
+        StringBuilder query = new StringBuilder("SELECT ");
+        String delim = "", maindelim = "";
+        for(int i = 1; i < params.length; i++){
+            query.append(delim);
+            delim = ",";
+            query.append(params[i]);
+        }
+        query.append(String.format(" FROM %s ORDER BY %s DESC", table, pkey));
+        try{
+            ResultSet rs = stmt.executeQuery(query.toString());
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while ( rs.next() ) {
+                response.append(maindelim);
+                maindelim = "\n";
+                delim = "";
+                for (int i = 1; i <= columnCount; i++) {
+                    response.append(delim);
+                    delim = ",";
+                    response.append(rs.getObject(i));
+                }
+            }
+            rs.close();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -192,7 +319,7 @@ public class PerformQuery extends AsyncTask<String, String, String>
         String primaryValue = params[1];
         String newScore = params[2];
         try{
-            String query = String.format("UPDATE %s SET %s=%s+'%s' WHERE %s='%s';", table, score, score, newScore, primaryKey, primaryValue);
+            String query = String.format("UPDATE %s SET %s=%s WHERE %s='%s';", table, score, newScore, primaryKey, primaryValue);
             stmt.executeUpdate(query);
             response = String.format("%s updated", score);
         }
@@ -234,7 +361,7 @@ public class PerformQuery extends AsyncTask<String, String, String>
             query.append(String.format("%s %s", params[i++], params[i]));
         }
         query.append(")");
-
+        System.out.println(query.toString());
         try {
             stmt.executeUpdate(query.toString());
             response = String.format("created table: %s", table);
@@ -472,23 +599,54 @@ public class PerformQuery extends AsyncTask<String, String, String>
         return password;
     }
 
-    private String performGetAllFromTable(String... params)
+    private String performKeysFromTable(String... params)
     {
         StringBuilder response = new StringBuilder("");
         String delim = "";
         String table = params[0];
-        String key = table.equals(UsersList.USERS_TABLE) ? getPrimaryKey(table) + ",approved" : getPrimaryKey(table);
-        String query = String.format("SELECT %s FROM %s", key, table);
+        String pkey = getPrimaryKey(table);
+        String query = String.format("SELECT %s%s FROM %s ORDER BY %s DESC", pkey, table.equals(UsersList.USERS_TABLE) ? ",approved" : "", table, pkey);
         try {
             ResultSet rs = stmt.executeQuery(query);
             while ( rs.next() ) {
                 response.append(delim);
                 delim = ",";
                 if(table.equals(UsersList.USERS_TABLE)) {
-                    response.append(String.format("%s %s", rs.getString(key.split(",")[0]).trim(), rs.getString(key.split(",")[1]).trim()));
+                    response.append(String.format("%s %s", rs.getString(pkey.trim()), rs.getString("approved")));
                 }
                 else{
-                    response.append(rs.getString(key));
+                    response.append(rs.getString(pkey));
+                }
+            }
+            rs.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return response.toString();
+    }
+
+    private String performAllFromTable(String... params)
+    {
+        StringBuilder response = new StringBuilder("");
+        String maindelim = "";
+        String table = params[0];
+        String pkey = getPrimaryKey(table);
+        String query = String.format("SELECT * FROM %s ORDER BY %s DESC", table, pkey);
+        try {
+            ResultSet rs = stmt.executeQuery(query);
+            ResultSetMetaData rsmt = rs.getMetaData();
+            int columnCount = rsmt.getColumnCount();
+
+            while ( rs.next() ) {
+                response.append(maindelim);
+                maindelim = "\n";
+                String delim = "";
+                for (int i = 1; i <= columnCount; i++) {
+                    response.append(delim);
+                    delim = ",";
+                    response.append(rs.getObject(i));
                 }
             }
             rs.close();

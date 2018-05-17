@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = getSharedPreferences("com.example.danielakua.dbapp_sharedPrefs", 0);
 
         if(!sharedPref.contains("adminuser")){
-            sharedPref.edit().putString("adminuser", "Admin")
+            sharedPref.edit().putString("adminuser", "admin")
                              .putString("adminpass", "admin").apply();
         }
 

@@ -11,7 +11,9 @@ import java.util.Arrays;
 
 public class TablesList extends AppCompatActivity {
 
+    protected static final String MAIN_TABLE = "main_table";
     protected ArrayList<String> tables;
+    protected ArrayList<String> viewables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,12 @@ public class TablesList extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        if(MainActivity.sharedPref.getString("username", "").equals("admin")) {
+            findViewById(R.id.addTableTableslist).setVisibility(View.VISIBLE);
+        }
+        else {
+            findViewById(R.id.addTableTableslist).setVisibility(View.INVISIBLE);
+        }
         getTables();
     }
 
@@ -32,10 +40,19 @@ public class TablesList extends AppCompatActivity {
             {
                 response = response.trim();
                 tables = new ArrayList<>(Arrays.asList(response.split("\n")));
-                loadTables();
             }
         });
         query.execute();
+        query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse(){
+            @Override
+            public void processFinish(String response)
+            {
+                response = response.trim();
+                viewables = new ArrayList<>(Arrays.asList(response.split(",")));
+                loadTables();
+            }
+        });
+        query.execute(MAIN_TABLE);
     }
 
     // click for create table page
@@ -48,7 +65,8 @@ public class TablesList extends AppCompatActivity {
 
     protected void loadTables(){
         ListView listView = findViewById(R.id.tables);
-        TableAdapter adapter = new TableAdapter(this, tables);
+        boolean su = MainActivity.sharedPref.getString("username", "").equals("admin");
+        TableAdapter adapter = new TableAdapter(this, su ? tables : viewables, viewables);
         listView.setAdapter(adapter);
     }
 }

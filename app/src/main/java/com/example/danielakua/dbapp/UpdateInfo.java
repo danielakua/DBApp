@@ -35,7 +35,7 @@ public class UpdateInfo extends AppCompatActivity {
 
         titleInfo.setText(String.format(getString(R.string.info_title), username));
         isAdmin = MainActivity.sharedPref.getString("username", "")
-                 .equals(MainActivity.sharedPref.getString("adminuser", "Admin")) &&
+                 .equals(MainActivity.sharedPref.getString("adminuser", "admin")) &&
                  !username.equals(MainActivity.sharedPref.getString("username", ""));
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -91,7 +91,7 @@ public class UpdateInfo extends AppCompatActivity {
             errorInfo.setText("New password can't be the old password");
             return;
         }
-        if(username.equals(MainActivity.sharedPref.getString("adminuser", "Admin"))){
+        if(username.equals(MainActivity.sharedPref.getString("adminuser", "admin"))){
             MainActivity.sharedPref.edit().putString("adminpass", newpass).apply();
             errorInfo.setText("password updated");
         }

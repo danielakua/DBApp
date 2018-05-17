@@ -36,6 +36,12 @@ public class UsersList extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        if(MainActivity.sharedPref.getString("username", "").equals("admin")) {
+            findViewById(R.id.addUserUserslist).setVisibility(View.VISIBLE);
+        }
+        else {
+            findViewById(R.id.addUserUserslist).setVisibility(View.INVISIBLE);
+        }
         getAllUsers();
     }
 
@@ -47,7 +53,7 @@ public class UsersList extends AppCompatActivity {
 
     void getAllUsers()
     {
-        titleUserslist.setText(String.format("%s's Users List", tableName));
+        titleUserslist.setText(tableName);
         errorUserslist.setText("");
         PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
             @Override

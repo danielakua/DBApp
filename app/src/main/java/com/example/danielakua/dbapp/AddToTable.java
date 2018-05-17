@@ -88,6 +88,8 @@ public class AddToTable extends AppCompatActivity {
                     type = "INTEGER"; break;
                 case "bool":
                     type = "BOOLEAN"; break;
+                case "float8":
+                    type = "FLOAT"; break;
                 default:
                     type = "";
             }
@@ -118,6 +120,12 @@ public class AddToTable extends AppCompatActivity {
                 case "INTEGER":
                     if (!col.get_value().matches("^\\d+$")){
                         errorAdd.setText(String.format("%s must contain only numbers", col.get_name()));
+                        return false;
+                    }
+                    break;
+                case "FLOAT":
+                    if (!col.get_value().matches("^\\d+\\.?\\d+$")){
+                        errorAdd.setText(String.format("%s must contain only numbers and a dot", col.get_name()));
                         return false;
                     }
                     break;

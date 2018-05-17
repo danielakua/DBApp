@@ -37,7 +37,7 @@ public class MainPageActivity extends AppCompatActivity {
     {
         super.onResume();
         Log("Entered Main Page");
-        if(!name.equals("Admin"))
+        if(!name.equals("admin"))
         {
             adminMain.setVisibility(View.INVISIBLE);
         }
@@ -63,7 +63,8 @@ public class MainPageActivity extends AppCompatActivity {
     public void GameClick(View view)
     {
         Log("Moving to Game Page");
-        Intent intent = new Intent(this, GamePage.class);
+//        Intent intent = new Intent(this, GamePage.class);
+        Intent intent = new Intent(this, TablesList.class);
         startActivity(intent);
     }
 

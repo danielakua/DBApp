@@ -8,7 +8,7 @@
     <string name="confirm_password">Confirm password</string>
     <string name="login_page">Login</string>
     <string name="main_page">Main Page</string>
-    <string name="button_game">To the game</string>
+    <string name="button_game">To the games</string>
     <string name="game_start">Start</string>
     <string name="logs_page">Logs</string>
     <string name="records_page">Records</string>
@@ -37,6 +37,9 @@
     <string name="button_add">Add</string>
     <string name="button_tables">Tables</string>
     <string name="title_tables">Tables List</string>
+    <string name="button_add_users">Add users</string>
+    <string name="button_submit">Submit</string>
+    <string name="button_calculate_score">Calculate score</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

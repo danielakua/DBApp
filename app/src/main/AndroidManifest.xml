@@ -23,7 +23,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainPageActivity" />
-        <activity android:name=".GamePage" />
         <activity android:name=".LogsPageActivity" />
         <activity android:name=".RecordsPageActivity" />
         <activity android:name=".RegisterPage" />
@@ -35,7 +34,8 @@
         <activity
             android:name=".AddToTable"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".TablesList"></activity>
+        <activity android:name=".TablesList" />
+        <activity android:name=".GameList"></activity>
     </application>
 
 </manifest>

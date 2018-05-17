@@ -37,7 +37,7 @@ public class CreateTable extends AppCompatActivity {
         columnName = findViewById(R.id.columnNameTable);
         errorTable = findViewById(R.id.errorTable);
 
-        final String[] items = new String[]{ "TEXT", "INTEGER", "BOOLEAN" };
+        final String[] items = new String[]{ "TEXT", "FLOAT", "INTEGER", "BOOLEAN" };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         columnType.setAdapter(adapter);
         columnType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
