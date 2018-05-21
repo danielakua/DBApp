@@ -167,7 +167,6 @@ public class GameList extends AppCompatActivity {
                 System.out.println("Skipping " + user);
                 continue;
             }
-            System.out.println(user);
             final String name = user.split(" ")[0];
             PerformQuery query = new PerformQuery("getColumns", new PerformQuery.AsyncResponse() {
                 @Override
@@ -184,11 +183,14 @@ public class GameList extends AppCompatActivity {
     private void updateScore(String name, String[] betCol){
         double sum = 0;
         for(int i = 0; i < matches.size(); i++){
+            System.out.println(matches.get(i));
             String[] line = matches.get(i).split(",");
-            if(!line[5].equals("0") && line[5].equals(betCol[i])){
-                sum += Double.parseDouble(line[Integer.parseInt(line[5]) + 1]);
+            if(!line[5].equals("0") && line[6].equals(betCol[i])){
+//                System.out.println("adding " + Double.parseDouble(line[Integer.parseInt(line[6]) + 1]) + " to " + name);
+                sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1]);
             }
         }
+
         PerformQuery query = new PerformQuery("updateScore", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response) { }
