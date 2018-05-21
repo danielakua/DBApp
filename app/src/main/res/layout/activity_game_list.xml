@@ -68,13 +68,13 @@
         android:onClick="addUsersClick"
         android:text="@string/button_add_users"
         android:textAllCaps="false"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
+        app:layout_constraintEnd_toStartOf="@+id/submitGamelist"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button3"
-        app:layout_constraintTop_toTopOf="@+id/button3" />
+        app:layout_constraintStart_toEndOf="@+id/scoreGamelist"
+        app:layout_constraintTop_toTopOf="@+id/scoreGamelist" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/scoreGamelist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -87,7 +87,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/submitGamelist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="SubmitClick"

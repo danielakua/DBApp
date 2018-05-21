@@ -40,7 +40,7 @@ public class AddToTable extends AppCompatActivity {
             return;
         }
         String[] params = getParamsList();
-        errorAdd.setText("Attempting to communicate with the server...");
+        errorAdd.setText(R.string.attempting_connection);
         PerformQuery query = new PerformQuery("addToTable", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
@@ -63,7 +63,7 @@ public class AddToTable extends AppCompatActivity {
     }
 
     private void getColumns(){
-        errorAdd.setText("Attempting to communicate with the server...");
+        errorAdd.setText(R.string.attempting_connection);
         PerformQuery query = new PerformQuery("columns", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)

@@ -99,11 +99,6 @@ class MatchAdapter extends BaseAdapter
                 updateLock(entry);
             }
         });
-        //TODO: calculate score and add to users table
-        //TODO: add column for correct bet
-        //TODO: update user's choices with submit
-        //TODO: figure out how to implement submit
-        //TODO: refactor this ugly code
         entryLeftWin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 entryLeftWin.setTextColor(Color.RED);

@@ -80,7 +80,7 @@ public class RegisterPage extends AppCompatActivity {
             return;
         }
 
-        errorRegister.setText("Attempting to communicate with the server...");
+        errorRegister.setText(R.string.attempting_connection);
         PerformQuery query = new PerformQuery("apply", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)

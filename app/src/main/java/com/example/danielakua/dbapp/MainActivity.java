@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             GoToMain(adminuser);
             return;
         }
-        errorLogin.setText("Attempting to communicate with the server...");
+        errorLogin.setText(R.string.attempting_connection);
         PerformQuery query = new PerformQuery("login", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)

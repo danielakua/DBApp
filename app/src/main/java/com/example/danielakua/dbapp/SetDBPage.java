@@ -90,15 +90,12 @@ public class SetDBPage extends AppCompatActivity {
         }
 
         final String oldUrl = MainActivity.sharedPref.getString("dburl", null);
-        final String dbnameOld = MainActivity.sharedPref.getString("dbname", null);
-        final String dbuserOld = MainActivity.sharedPref.getString("dbuser", null);
-        final String dbpassOld = MainActivity.sharedPref.getString("dbpass", null);
+        final String oldName = MainActivity.sharedPref.getString("dbname", null);
 
-        String dburl = String.format("jdbc:postgresql://%s:%s/%s", host, port, dbname);
+
+        String dburl = String.format("jdbc:postgresql://%s:%s/%s?user=%s&password=%s", host, port, dbname, dbuser, dbpass);
         MainActivity.sharedPref.edit().putString("dburl", dburl)
-                                      .putString("dbname", dbname)
-                                      .putString("dbuser", dbuser)
-                                      .putString("dbpass", dbpass).apply();
+                                      .putString("dbname", dbname).apply();
 
         PerformQuery query = new PerformQuery("create", new PerformQuery.AsyncResponse(){
             @Override
@@ -106,12 +103,10 @@ public class SetDBPage extends AppCompatActivity {
             {
                 response = response.trim();
                 errorSetdb.setText(response);
-                if(response.equals("server error"))
+                if(response.equals("server error") || response.equals("one or more of the credentials is wrong"))
                 {
                     MainActivity.sharedPref.edit().putString("dburl", oldUrl)
-                            .putString("dbuser", dbuserOld)
-                            .putString("dbname", dbnameOld)
-                            .putString("dbpass", dbpassOld).apply();
+                                                  .putString("dbname", oldName).apply();
                 }
                 else
                 {

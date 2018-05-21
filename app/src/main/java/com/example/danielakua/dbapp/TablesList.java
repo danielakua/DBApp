@@ -34,15 +34,16 @@ public class TablesList extends AppCompatActivity {
     }
 
     protected void getTables(){
-        PerformQuery query = new PerformQuery("getTables", new PerformQuery.AsyncResponse(){
+        final boolean isAdmin = MainActivity.sharedPref.getString("username", "").equals("admin");
+        PerformQuery query = new PerformQuery(isAdmin ? "getTables" : "getRelevantTables", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
                 response = response.trim();
-                tables = new ArrayList<>(Arrays.asList(response.split("\n")));
+                tables = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split("\n")));
             }
         });
-        query.execute();
+        query.execute(MainActivity.sharedPref.getString("username", ""));
         query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
@@ -65,8 +66,7 @@ public class TablesList extends AppCompatActivity {
 
     protected void loadTables(){
         ListView listView = findViewById(R.id.tables);
-        boolean su = MainActivity.sharedPref.getString("username", "").equals("admin");
-        TableAdapter adapter = new TableAdapter(this, su ? tables : viewables, viewables);
+        TableAdapter adapter = new TableAdapter(this, tables, viewables);
         listView.setAdapter(adapter);
     }
 }

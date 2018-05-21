@@ -96,7 +96,7 @@ public class UpdateInfo extends AppCompatActivity {
             errorInfo.setText("password updated");
         }
         else {
-            errorInfo.setText("Attempting to communicate with the server...");
+            errorInfo.setText(R.string.attempting_connection);
             PerformQuery query = new PerformQuery("update", new PerformQuery.AsyncResponse(){
                 @Override
                 public void processFinish(String response)

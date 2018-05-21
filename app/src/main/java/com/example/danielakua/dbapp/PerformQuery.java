@@ -16,7 +16,6 @@ public class PerformQuery extends AsyncTask<String, String, String>
 
     private AsyncResponse delegate = null;
     private String action;
-    private Connection c = null;
     private Statement stmt = null;
 
     PerformQuery(String action, AsyncResponse delegate)
@@ -40,15 +39,14 @@ public class PerformQuery extends AsyncTask<String, String, String>
     @Override
     protected String doInBackground(String... params) {
         String response = "";
+        Connection c;
 
         try {
             Class.forName("org.postgresql.Driver");
 
             String dburl = MainActivity.sharedPref.getString("dburl", null);
-            String dbuser = MainActivity.sharedPref.getString("dbuser", null);
-            String dbpass = MainActivity.sharedPref.getString("dbpass", null);
 
-            c = DriverManager.getConnection(dburl, dbuser, dbpass);
+            c = DriverManager.getConnection(dburl);
             c.setAutoCommit(false);
             stmt = c.createStatement();
         }
@@ -88,6 +86,9 @@ public class PerformQuery extends AsyncTask<String, String, String>
             case "getTables":
                 response = performGetTables();
                 break;
+            case "getRelevantTables":
+                response = performGetRelevantTables(params);
+                break;
             case "delete":
                 response = performDelete(params);
                 break;
@@ -121,16 +122,36 @@ public class PerformQuery extends AsyncTask<String, String, String>
             if (stmt != null) {
                 stmt.close();
             }
-            if (c != null) {
-                c.commit();
-                c.close();
-            }
+            c.commit();
+            c.close();
         }
         catch (Exception e) {
             e.printStackTrace();
             response = "Can't connect to the server";
         }
         return response;
+    }
+
+    private String performGetRelevantTables(String... params){
+        StringBuilder response = new StringBuilder("");
+        String column = params[0];
+        String delim = "";
+        try {
+            String query = String.format("SELECT table_name FROM information_schema.columns WHERE column_name = '%s'", column);
+            System.out.println(query);
+            ResultSet rs = stmt.executeQuery(query);
+            while(rs.next()) {
+                response.append(delim);
+                delim = "\n";
+                response.append(rs.getString("table_name"));
+            }
+        }
+        catch (Exception e){
+            response.append("server error");
+            e.printStackTrace();
+        }
+        System.out.println("AAAAAAA" + response.toString());
+        return response.toString();
     }
 
     private String performGetTables(){
@@ -379,10 +400,13 @@ public class PerformQuery extends AsyncTask<String, String, String>
         String query;
         try
         {
-            query = String.format("CREATE TABLE IF NOT EXISTS %s (username TEXT PRIMARY KEY, password TEXT, score INTEGER, approved BOOLEAN)", UsersList.USERS_TABLE);
+            query = String.format("CREATE TABLE IF NOT EXISTS %s (username TEXT PRIMARY KEY, password TEXT, score FLOAT, approved BOOLEAN)", UsersList.USERS_TABLE);
             stmt.executeUpdate(query);
 
-            response = String.format("created table: %s", UsersList.USERS_TABLE);
+            query = String.format("CREATE TABLE IF NOT EXISTS %s (name TEXT PRIMARY KEY)", TablesList.MAIN_TABLE);
+            stmt.executeUpdate(query);
+
+            response = String.format("created tables: %s, %s", UsersList.USERS_TABLE, TablesList.MAIN_TABLE);
         }
         catch (Exception e)
         {

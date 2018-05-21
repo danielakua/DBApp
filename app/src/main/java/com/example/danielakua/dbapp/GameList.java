@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ public class GameList extends AppCompatActivity {
         boolean isAdmin = MainActivity.sharedPref.getString("username", "").equals("admin");
         findViewById(R.id.addGameGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
         findViewById(R.id.addUserGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
+        ((Button) findViewById(R.id.scoreGamelist)).setText(String.format(getString(R.string.button_calculate_score), isAdmin ? "Calculate" : "Show"));
         getAllMatches();
     }
 
@@ -86,7 +88,7 @@ public class GameList extends AppCompatActivity {
     }
 
     public void addUsersClick(View view){
-        errorGamelist.setText("Attempting to connect to server...");
+        errorGamelist.setText(R.string.attempting_connection);
         PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
@@ -122,7 +124,7 @@ public class GameList extends AppCompatActivity {
     }
 
     public void SubmitClick(View view){
-        errorGamelist.setText("Attempting to connect to server...");
+        errorGamelist.setText(R.string.attempting_connection);
         ArrayList<String> params = new ArrayList<>();
         params.add(tableName);
         params.add(MainActivity.sharedPref.getString("username", ""));
@@ -149,7 +151,7 @@ public class GameList extends AppCompatActivity {
             Intent intent = new Intent(this, RecordsPageActivity.class);
             startActivity(intent);
         }
-        errorGamelist.setText("Attempting to connect to server...");
+        errorGamelist.setText(R.string.attempting_connection);
         PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
@@ -182,12 +184,13 @@ public class GameList extends AppCompatActivity {
 
     private void updateScore(String name, String[] betCol){
         double sum = 0;
-        for(int i = 0; i < matches.size(); i++){
-            System.out.println(matches.get(i));
-            String[] line = matches.get(i).split(",");
-            if(!line[5].equals("0") && line[6].equals(betCol[i])){
-//                System.out.println("adding " + Double.parseDouble(line[Integer.parseInt(line[6]) + 1]) + " to " + name);
-                sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1]);
+        if(matches.size() == betCol.length) {
+            for (int i = 0; i < matches.size(); i++) {
+                System.out.println(matches.get(i));
+                String[] line = matches.get(i).split(",");
+                if (!line[5].equals("0") && line[6].equals(betCol[i])) {
+                    sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1]);
+                }
             }
         }
 

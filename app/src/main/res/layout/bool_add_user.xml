@@ -10,7 +10,7 @@
 
         android:layout_weight="1"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/entryBoolType"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textSize="14sp" />
 
     <Spinner
         android:id="@+id/entryBoolean"
