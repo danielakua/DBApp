@@ -3,8 +3,6 @@ package com.example.danielakua.dbapp;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +64,7 @@ class TableAdapter extends BaseAdapter
             }
         });
 
-        if(MainActivity.sharedPref.getString("username", "").equals("admin")) {
+        if(LoginPage.sharedPref.getString("username", "").equals("admin")) {
             if(entry.equals(TablesList.MAIN_TABLE) || entry.equals(UsersList.USERS_TABLE)){
                 viewable.setVisibility(View.INVISIBLE);
             }

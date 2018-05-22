@@ -9,15 +9,12 @@ import android.widget.TextView;
 
 public class SetDBPage extends AppCompatActivity {
 
-    public StringBuilder logger = LogsPageActivity.logger;// logger instance
-    protected final String TAG = "Set DB Page:";// logger tag
     private EditText hostSetdb;
     private EditText portSetdb;
     private EditText dbSetdb;
     private EditText usernamedb;
     private EditText passworddb;
     private TextView errorSetdb;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +31,9 @@ public class SetDBPage extends AppCompatActivity {
         portSetdb.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
-    // add messages to the log
-    public void Log(String msg)
-    {
-        logger.append(String.format("%s %s\n", TAG, msg));
-    }
-
     // click to set DB
     public void SetDBClick(View view)
     {
-        Log("Trying to set DB");
         errorSetdb.setText("Connecting...");
 
         String host = hostSetdb.getText().toString();
@@ -54,47 +44,41 @@ public class SetDBPage extends AppCompatActivity {
 
         if(host.isEmpty())
         {
-            Log("Host name empty");
             errorSetdb.setText("Enter host name or ip");
             return;
         }
         if(port.isEmpty())
         {
-            Log("Port empty");
             errorSetdb.setText("Enter port number");
             return;
         }
         if(!port.matches("^\\d{4,5}$"))
         {
-            Log("Invalid port number");
             errorSetdb.setText("Invalid port number");
             return;
         }
         if(dbname.isEmpty())
         {
-            Log("DB name empty");
             errorSetdb.setText("Enter DB name");
             return;
         }
         if(dbuser.isEmpty())
         {
-            Log("DB username name empty");
             errorSetdb.setText("Enter DB username");
             return;
         }
         if(dbpass.isEmpty())
         {
-            Log("DB password empty");
             errorSetdb.setText("Enter DB password");
             return;
         }
 
-        final String oldUrl = MainActivity.sharedPref.getString("dburl", null);
-        final String oldName = MainActivity.sharedPref.getString("dbname", null);
+        final String oldUrl = LoginPage.sharedPref.getString("dburl", null);
+        final String oldName = LoginPage.sharedPref.getString("dbname", null);
 
 
         String dburl = String.format("jdbc:postgresql://%s:%s/%s?user=%s&password=%s", host, port, dbname, dbuser, dbpass);
-        MainActivity.sharedPref.edit().putString("dburl", dburl)
+        LoginPage.sharedPref.edit().putString("dburl", dburl)
                                       .putString("dbname", dbname).apply();
 
         PerformQuery query = new PerformQuery("create", new PerformQuery.AsyncResponse(){
@@ -105,7 +89,7 @@ public class SetDBPage extends AppCompatActivity {
                 errorSetdb.setText(response);
                 if(response.equals("server error") || response.equals("one or more of the credentials is wrong"))
                 {
-                    MainActivity.sharedPref.edit().putString("dburl", oldUrl)
+                    LoginPage.sharedPref.edit().putString("dburl", oldUrl)
                                                   .putString("dbname", oldName).apply();
                 }
                 else
@@ -120,7 +104,6 @@ public class SetDBPage extends AppCompatActivity {
     // click to cancel
     public void CancelClick(View view)
     {
-        Log("Moving to Main Page");
         finish();
     }
 }

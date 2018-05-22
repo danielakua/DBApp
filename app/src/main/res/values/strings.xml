@@ -5,8 +5,10 @@
     <string name="button_cancel">Cancel</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="db_url">DB URL</string>
     <string name="confirm_password">Confirm password</string>
     <string name="login_page">Login</string>
+    <string name="logout_page">Logout</string>
     <string name="main_page">Main Page</string>
     <string name="button_game">To the games</string>
     <string name="game_start">Start</string>
@@ -40,6 +42,7 @@
     <string name="button_add_users">Add users</string>
     <string name="button_submit">Submit</string>
     <string name="button_calculate_score">%s score</string>
+    <string name="button_admin">I am Admin</string>
     <string name="attempting_connection">Attempting to communicate with the server\.\.\.</string>
 
     <!-- TODO: Remove or change this placeholder text -->

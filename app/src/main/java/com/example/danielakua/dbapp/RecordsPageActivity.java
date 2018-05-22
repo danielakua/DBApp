@@ -11,8 +11,6 @@ import java.util.Comparator;
 
 public class RecordsPageActivity extends AppCompatActivity {
 
-    public StringBuilder logger = LogsPageActivity.logger; // logger instance
-    protected final String TAG = "Records Page:";// logger tag
     ArrayList<Record> records = new ArrayList<>();
 
     @Override
@@ -20,15 +18,7 @@ public class RecordsPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_records_page);
 
-        Log("Entered Records Page");
-
         getRecords();
-    }
-
-    // add messages to the log
-    public void Log(String msg)
-    {
-        logger.append(String.format("%s %s\n", TAG, msg));
     }
 
     private void getRecords(){
@@ -60,14 +50,6 @@ public class RecordsPageActivity extends AppCompatActivity {
                 return o1I > o2I ? -1 : o1I < o2I ? 1 : 0;
             }
         });
-
-        // keep top 20 scores
-        int limit = records.size();
-//        int max = 20;
-//        if ( limit > max )
-//            records.subList(max, limit).clear();
-//
-//        Log(String.format("Displaying top %d scores", max));
 
         // show scores in list view
         ListView listView = findViewById(R.id.records);

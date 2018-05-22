@@ -6,19 +6,35 @@
     android:layout_height="match_parent"
     tools:context="com.example.danielakua.dbapp.RegisterPage">
 
+    <Button
+        android:id="@+id/adminRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:onClick="AdminClick"
+        android:text="@string/button_admin"
+        android:textAllCaps="false"
+        android:textColor="@android:color/holo_blue_light"
+        app:layout_constraintBottom_toBottomOf="@+id/titleRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/titleRegister"
+        app:layout_constraintTop_toTopOf="@+id/titleRegister" />
+
     <TextView
         android:id="@+id/titleRegister"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/button_register"
         android:textAlignment="center"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/errorRegister"
+        app:layout_constraintEnd_toStartOf="@+id/adminRegister"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -31,10 +47,28 @@
         android:textColor="@android:color/holo_red_dark"
         android:textSize="18sp"
         android:textStyle="italic"
-        app:layout_constraintBottom_toTopOf="@+id/usernameRegister"
+        app:layout_constraintBottom_toTopOf="@+id/urlRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleRegister" />
+
+    <EditText
+        android:id="@+id/urlRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:hint="@string/db_url"
+        android:inputType="textUri"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/usernameRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/errorRegister" />
 
     <EditText
         android:id="@+id/usernameRegister"
@@ -51,7 +85,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/errorRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/urlRegister" />
 
     <EditText
         android:id="@+id/passwordRegister"
@@ -93,22 +127,9 @@
         android:onClick="RegisterClick"
         android:text="@string/button_register"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cancelRegister"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirmRegister" />
-
-    <Button
-        android:id="@+id/cancelRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="CancelClick"
-        android:text="@string/button_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/registerRegister"
-        app:layout_constraintTop_toTopOf="@+id/registerRegister" />
 
 </android.support.constraint.ConstraintLayout>

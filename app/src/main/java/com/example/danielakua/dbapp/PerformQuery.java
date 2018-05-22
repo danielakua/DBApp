@@ -44,7 +44,7 @@ public class PerformQuery extends AsyncTask<String, String, String>
         try {
             Class.forName("org.postgresql.Driver");
 
-            String dburl = MainActivity.sharedPref.getString("dburl", null);
+            String dburl = LoginPage.sharedPref.getString("dburl", null);
 
             c = DriverManager.getConnection(dburl);
             c.setAutoCommit(false);
@@ -52,7 +52,7 @@ public class PerformQuery extends AsyncTask<String, String, String>
         }
         catch (Exception e) {
             e.printStackTrace();
-            return "one or more of the credentials is wrong";
+            return "one or more of the DB credentials are wrong";
         }
 
         switch (action) {
@@ -159,7 +159,7 @@ public class PerformQuery extends AsyncTask<String, String, String>
         String delim = "";
         try {
             String query = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' " +
-                           "AND table_type='BASE TABLE' AND table_catalog='" + MainActivity.sharedPref.getString("dbname", "dotgamedb") + "';";
+                           "AND table_type='BASE TABLE' AND table_catalog='" + LoginPage.sharedPref.getString("dbname", "dotgamedb") + "';";
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()) {
                 response.append(delim);

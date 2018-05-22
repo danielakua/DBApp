@@ -24,7 +24,7 @@ public class TablesList extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        if(MainActivity.sharedPref.getString("username", "").equals("admin")) {
+        if(LoginPage.sharedPref.getString("username", "").equals("admin")) {
             findViewById(R.id.addTableTableslist).setVisibility(View.VISIBLE);
         }
         else {
@@ -34,7 +34,7 @@ public class TablesList extends AppCompatActivity {
     }
 
     protected void getTables(){
-        final boolean isAdmin = MainActivity.sharedPref.getString("username", "").equals("admin");
+        final boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
         PerformQuery query = new PerformQuery(isAdmin ? "getTables" : "getRelevantTables", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
@@ -43,7 +43,7 @@ public class TablesList extends AppCompatActivity {
                 tables = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split("\n")));
             }
         });
-        query.execute(MainActivity.sharedPref.getString("username", ""));
+        query.execute(LoginPage.sharedPref.getString("username", ""));
         query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)

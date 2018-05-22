@@ -1,10 +1,7 @@
 package com.example.danielakua.dbapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +53,7 @@ class MatchAdapter extends BaseAdapter
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View rowView;
-        final boolean isAdmin = MainActivity.sharedPref.getString("username", "").equals("admin");
+        final boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
         context = parent.getContext();
         final String[] entry = ((String) getItem(position)).split(",");
         boolean enabled = Integer.parseInt(entry[5]) == 0;

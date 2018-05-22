@@ -33,7 +33,7 @@ public class GameList extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        boolean isAdmin = MainActivity.sharedPref.getString("username", "").equals("admin");
+        boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
         findViewById(R.id.addGameGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
         findViewById(R.id.addUserGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
         ((Button) findViewById(R.id.scoreGamelist)).setText(String.format(getString(R.string.button_calculate_score), isAdmin ? "Calculate" : "Show"));
@@ -64,7 +64,7 @@ public class GameList extends AppCompatActivity {
                 loadMatches();
             }
         });
-        query.execute(tableName, MainActivity.sharedPref.getString("username", ""));
+        query.execute(tableName, LoginPage.sharedPref.getString("username", ""));
     }
 
     // load the records
@@ -127,7 +127,7 @@ public class GameList extends AppCompatActivity {
         errorGamelist.setText(R.string.attempting_connection);
         ArrayList<String> params = new ArrayList<>();
         params.add(tableName);
-        params.add(MainActivity.sharedPref.getString("username", ""));
+        params.add(LoginPage.sharedPref.getString("username", ""));
         for(int i = 0; i < bets.size(); i++){
             params.add(matches.get(i).split(",")[0]);
             params.add(bets.get(i));
@@ -147,7 +147,7 @@ public class GameList extends AppCompatActivity {
     }
 
     public void CalculateScoreClick(View view){
-        if(!MainActivity.sharedPref.getString("username","").equals("admin")){
+        if(!LoginPage.sharedPref.getString("username","").equals("admin")){
             Intent intent = new Intent(this, RecordsPageActivity.class);
             startActivity(intent);
         }

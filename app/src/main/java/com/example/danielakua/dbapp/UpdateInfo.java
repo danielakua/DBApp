@@ -10,11 +10,8 @@ import android.widget.TextView;
 public class UpdateInfo extends AppCompatActivity {
 
     public static final String EXTRA_INFO = "EXTRA_INFO_USERNAME";
-    public StringBuilder logger = LogsPageActivity.logger;// logger instance
-    protected final String TAG = "UserInfo Page:";// logger tag
 
     private boolean isAdmin;
-
     private String username;
     private TextView errorInfo;
     private EditText oldInfo;
@@ -34,9 +31,9 @@ public class UpdateInfo extends AppCompatActivity {
         conewInfo = findViewById(R.id.conewInfo);
 
         titleInfo.setText(String.format(getString(R.string.info_title), username));
-        isAdmin = MainActivity.sharedPref.getString("username", "")
-                 .equals(MainActivity.sharedPref.getString("adminuser", "admin")) &&
-                 !username.equals(MainActivity.sharedPref.getString("username", ""));
+        isAdmin = LoginPage.sharedPref.getString("username", "")
+                 .equals(LoginPage.sharedPref.getString("adminuser", "admin")) &&
+                 !username.equals(LoginPage.sharedPref.getString("username", ""));
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -48,11 +45,6 @@ public class UpdateInfo extends AppCompatActivity {
             oldInfo.setVisibility(View.INVISIBLE);
         }
     }
-    // add messages to the log
-    public void Log(String msg)
-    {
-        logger.append(String.format("%s %s\n", TAG, msg));
-    }
 
     // click to cancel
     public void CancelClick(View view){
@@ -60,39 +52,34 @@ public class UpdateInfo extends AppCompatActivity {
     }
 
     // click to change password
-    public void ChangePWClick(View view){
+    public void ChangePWClick(View view) {
         String oldpass = oldInfo.getText().toString();
         String newpass = newInfo.getText().toString();
         String conewpass = conewInfo.getText().toString();
 
         if(oldpass.isEmpty() && !isAdmin){
-            Log("Empty old password");
             errorInfo.setText("Enter password");
             return;
         }
         if(newpass.isEmpty()){
-            Log("Empty new password");
             errorInfo.setText("Enter new password");
             return;
         }
         if(conewpass.isEmpty()){
-            Log("Empty confirm password");
             errorInfo.setText("Enter confirm password");
             return;
         }
         if(!newpass.equals(conewpass)){
-            Log("Passwords doesn't match");
             errorInfo.setText("Passwords doesn't match");
             return;
         }
 
         if(newpass.equals(oldpass) && !isAdmin){
-            Log("New password and old password are the same");
             errorInfo.setText("New password can't be the old password");
             return;
         }
-        if(username.equals(MainActivity.sharedPref.getString("adminuser", "admin"))){
-            MainActivity.sharedPref.edit().putString("adminpass", newpass).apply();
+        if(username.equals(LoginPage.sharedPref.getString("adminuser", "admin"))){
+            LoginPage.sharedPref.edit().putString("adminpass", newpass).apply();
             errorInfo.setText("password updated");
         }
         else {

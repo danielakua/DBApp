@@ -14,8 +14,7 @@ public class UsersList extends AppCompatActivity {
 
     static final String USERS_TABLE = "users";
     static final String EXTRA_INFO = "EXTRA_INFO_TABLE_NAME";
-    public StringBuilder logger = LogsPageActivity.logger; // logger instance
-    protected final String TAG = "Users list Page:";// logger tag
+
     private ArrayList<String> users;
     protected String tableName = USERS_TABLE;
     protected TextView titleUserslist;
@@ -26,8 +25,6 @@ public class UsersList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
 
-        Log("Entered Users list Page");
-
         tableName = getIntent().getStringExtra(EXTRA_INFO);
         titleUserslist = findViewById(R.id.titleUserslist);
         errorUserslist = findViewById(R.id.errorUserslist);
@@ -36,7 +33,7 @@ public class UsersList extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        if(MainActivity.sharedPref.getString("username", "").equals("admin")) {
+        if(LoginPage.sharedPref.getString("username", "").equals("admin")) {
             findViewById(R.id.addUserUserslist).setVisibility(View.VISIBLE);
         }
         else {
@@ -45,14 +42,7 @@ public class UsersList extends AppCompatActivity {
         getAllUsers();
     }
 
-    // add messages to the log
-    public void Log(String msg)
-    {
-        logger.append(String.format("%s %s\n", TAG, msg));
-    }
-
-    void getAllUsers()
-    {
+    void getAllUsers() {
         titleUserslist.setText(tableName);
         errorUserslist.setText("");
         PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
@@ -67,10 +57,7 @@ public class UsersList extends AppCompatActivity {
     }
 
     // load the records
-    void loadUsers()
-    {
-        Log("Displaying " + tableName);
-
+    void loadUsers() {
         // show users in list view
         ListView listView = findViewById(R.id.users);
         UserAdapter adapter = new UserAdapter(this, users, tableName, new UserAdapter.OnDataChangeListener() {
