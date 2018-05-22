@@ -146,7 +146,7 @@ public class GameList extends AppCompatActivity {
         query.execute(paramsArr);
     }
 
-    public void CalculateScoreClick(View view){
+    public void CalculateScoreClick(View view) {
         if(!LoginPage.sharedPref.getString("username","").equals("admin")){
             Intent intent = new Intent(this, RecordsPageActivity.class);
             startActivity(intent);
@@ -163,7 +163,7 @@ public class GameList extends AppCompatActivity {
         query.execute(UsersList.USERS_TABLE);
     }
 
-    private void calculateScore(ArrayList<String> users){
+    private void calculateScore(ArrayList<String> users) {
         for(String user : users){
             if(user.split(" ")[1].equals("f")){
                 System.out.println("Skipping " + user);
@@ -182,15 +182,13 @@ public class GameList extends AppCompatActivity {
         errorGamelist.setText("");
     }
 
-    private void updateScore(String name, String[] betCol){
+    private void updateScore(String name, String[] betCol) {
         double sum = 0;
-        System.out.println("calculating score for " + name);
         for(String bet :betCol){
             System.out.println(bet);
         }
         if(matches.size() == betCol.length) {
             for (int i = 0; i < matches.size(); i++) {
-                System.out.println(matches.get(i));
                 String[] line = matches.get(i).split(",");
                 if (!line[5].equals("0") && line[6].equals(betCol[i])) {
                     sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1]);
@@ -198,7 +196,7 @@ public class GameList extends AppCompatActivity {
             }
         }
 
-        PerformQuery query = new PerformQuery("updateScore", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery("updateScore", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) { }
         });

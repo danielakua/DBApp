@@ -7,10 +7,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 
-public class PerformQuery extends AsyncTask<String, String, String>
-{
-    public interface AsyncResponse
-    {
+public class PerformQuery extends AsyncTask<String, String, String> {
+    public interface AsyncResponse {
         void processFinish(String response);
     }
 
@@ -18,8 +16,7 @@ public class PerformQuery extends AsyncTask<String, String, String>
     private String action;
     private Statement stmt = null;
 
-    PerformQuery(String action, AsyncResponse delegate)
-    {
+    PerformQuery(String action, AsyncResponse delegate) {
         this.delegate = delegate;
         this.action = action;
     }
@@ -150,7 +147,6 @@ public class PerformQuery extends AsyncTask<String, String, String>
             response.append("server error");
             e.printStackTrace();
         }
-        System.out.println("AAAAAAA" + response.toString());
         return response.toString();
     }
 

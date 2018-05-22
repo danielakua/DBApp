@@ -66,7 +66,7 @@ public class RegisterPage extends AppCompatActivity {
             errorRegister.setText("Illegal username");
             return;
         }
-        else if (username.matches("^[a-zA-Z].*$")) {
+        else if (!username.matches("^[a-zA-Z].*$")) {
             errorRegister.setText("username must start with a letter");
             return;
         }

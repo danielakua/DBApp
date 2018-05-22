@@ -22,14 +22,10 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-//        sharedPref = getSharedPreferences("com.example.danielakua.dbapp_sharedPrefs", 0);
-
         if(!sharedPref.contains("adminuser")){
             sharedPref.edit().putString("adminuser", "admin")
                              .putString("adminpass", "admin").apply();
         }
-
-//        sharedPref.edit().clear().apply();
 
         errorLogin = findViewById(R.id.errorLogin);
         usernameLogin = findViewById(R.id.usernameLogin);
