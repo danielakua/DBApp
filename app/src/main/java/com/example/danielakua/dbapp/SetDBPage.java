@@ -87,7 +87,7 @@ public class SetDBPage extends AppCompatActivity {
             {
                 response = response.trim();
                 errorSetdb.setText(response);
-                if(response.equals("server error") || response.equals("one or more of the credentials is wrong"))
+                if(response.equals("server error") || response.equals("one or more of the DB credentials are wrong"))
                 {
                     LoginPage.sharedPref.edit().putString("dburl", oldUrl)
                                                   .putString("dbname", oldName).apply();

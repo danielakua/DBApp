@@ -91,8 +91,8 @@ class TableAdapter extends BaseAdapter
     }
 
     private void GoToTable(String table) {
-        boolean kind = table.equals(GameList.MATCH_TABLE);
-        Intent intent = new Intent(context, kind ? GameList.class : UsersList.class);
+        boolean kind = table.equals(UsersList.USERS_TABLE) || table.equals(TablesList.MAIN_TABLE);
+        Intent intent = new Intent(context, kind ? UsersList.class : GameList.class);
         intent.putExtra(kind ? GameList.EXTRA_INFO : UsersList.EXTRA_INFO, table);
         context.startActivity(intent);
     }

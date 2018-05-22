@@ -22,7 +22,7 @@ public class TablesList extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         if(LoginPage.sharedPref.getString("username", "").equals("admin")) {
             findViewById(R.id.addTableTableslist).setVisibility(View.VISIBLE);
@@ -57,14 +57,12 @@ public class TablesList extends AppCompatActivity {
     }
 
     // click for create table page
-    public void CreateTableClick(View view)
-    {
-//        Log("Moving to Create Table Page");
+    public void CreateTableClick(View view) {
         Intent intent = new Intent(this, CreateTable.class);
         startActivity(intent);
     }
 
-    protected void loadTables(){
+    protected void loadTables() {
         ListView listView = findViewById(R.id.tables);
         TableAdapter adapter = new TableAdapter(this, tables, viewables);
         listView.setAdapter(adapter);

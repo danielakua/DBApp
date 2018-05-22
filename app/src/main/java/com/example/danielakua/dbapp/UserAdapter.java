@@ -72,11 +72,7 @@ class UserAdapter extends BaseAdapter
                     deleteUser((String) entryUser.getText(), mTable);
                 }
             });
-            entryPW.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-//                    GoToUpdateInfo(entryUser.getText().toString());
-                }
-            });
+            entryPW.setVisibility(mTable.equals(TablesList.MAIN_TABLE) ? View.INVISIBLE : View.VISIBLE);
         }
         return rowView;
     }

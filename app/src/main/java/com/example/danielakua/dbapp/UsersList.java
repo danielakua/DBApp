@@ -17,7 +17,6 @@ public class UsersList extends AppCompatActivity {
 
     private ArrayList<String> users;
     protected String tableName = USERS_TABLE;
-    protected TextView titleUserslist;
     protected TextView errorUserslist;
 
     @Override
@@ -26,24 +25,20 @@ public class UsersList extends AppCompatActivity {
         setContentView(R.layout.activity_users_list);
 
         tableName = getIntent().getStringExtra(EXTRA_INFO);
-        titleUserslist = findViewById(R.id.titleUserslist);
         errorUserslist = findViewById(R.id.errorUserslist);
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        if(LoginPage.sharedPref.getString("username", "").equals("admin")) {
-            findViewById(R.id.addUserUserslist).setVisibility(View.VISIBLE);
-        }
-        else {
-            findViewById(R.id.addUserUserslist).setVisibility(View.INVISIBLE);
-        }
+
+        boolean isMain = tableName.equals(TablesList.MAIN_TABLE);
+        findViewById(R.id.addUserUserslist).setVisibility(isMain ? View.INVISIBLE : View.VISIBLE);
         getAllUsers();
     }
 
     void getAllUsers() {
-        titleUserslist.setText(tableName);
+        ((TextView) findViewById(R.id.titleUserslist)).setText(tableName);
         errorUserslist.setText("");
         PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
             @Override

@@ -591,7 +591,7 @@ public class PerformQuery extends AsyncTask<String, String, String>
                 }
                 else
                 {
-                    String query = String.format("DELETE * %s SET approved=TRUE WHERE username='%s';", UsersList.USERS_TABLE, username);
+                    String query = String.format("DELETE FROM %s WHERE username='%s';", UsersList.USERS_TABLE, username);
                     stmt.executeUpdate(query);
                     response = "user rejected";
                 }

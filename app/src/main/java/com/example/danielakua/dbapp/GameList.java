@@ -177,13 +177,17 @@ public class GameList extends AppCompatActivity {
                     updateScore(name, response.split("\n"));
                 }
             });
-            query.execute(tableName, user.split(" ")[0]);
+            query.execute(tableName, name);
         }
         errorGamelist.setText("");
     }
 
     private void updateScore(String name, String[] betCol){
         double sum = 0;
+        System.out.println("calculating score for " + name);
+        for(String bet :betCol){
+            System.out.println(bet);
+        }
         if(matches.size() == betCol.length) {
             for (int i = 0; i < matches.size(); i++) {
                 System.out.println(matches.get(i));

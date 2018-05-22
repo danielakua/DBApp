@@ -29,6 +29,7 @@ public class RecordsPageActivity extends AppCompatActivity {
                 response = response.trim();
                 String[] scores = response.split("\n");
                 for(String score : scores){
+                    if(score.isEmpty()) { continue; }
                     records.add(new Record(score.split(",")[0], Double.parseDouble(score.split(",")[1])));
                 }
                 loadRecords();
