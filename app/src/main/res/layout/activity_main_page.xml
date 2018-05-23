@@ -81,19 +81,6 @@
         app:layout_constraintTop_toBottomOf="@+id/gameMain">
 
         <Button
-            android:id="@+id/recordsMain"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:onClick="RecordsClick"
-            android:text="@string/records_page"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toTopOf="@+id/changePWMain"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gameMain" />
-
-        <Button
             android:id="@+id/changePWMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

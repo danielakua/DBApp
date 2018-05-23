@@ -84,7 +84,7 @@ public class UpdateInfo extends AppCompatActivity {
         }
         else {
             errorInfo.setText(R.string.attempting_connection);
-            PerformQuery query = new PerformQuery("update", new PerformQuery.AsyncResponse(){
+            PerformQuery query = new PerformQuery(this, "update", new PerformQuery.AsyncResponse(){
                 @Override
                 public void processFinish(String response)
                 {

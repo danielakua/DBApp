@@ -53,7 +53,7 @@ class UserAdapter extends BaseAdapter
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView;
         context = parent.getContext();
-        if(mTable.equals(UsersList.USERS_TABLE)) //TODO: application
+        if(mTable.equals(UsersList.USERS_TABLE))
         {
             rowView = SpecialCase(position, parent);
         }
@@ -129,7 +129,7 @@ class UserAdapter extends BaseAdapter
 
     private void deleteUser(String username, final String table)
     {
-        PerformQuery query = new PerformQuery("delete", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(null, "delete", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
@@ -141,7 +141,7 @@ class UserAdapter extends BaseAdapter
 
     private void rejectUser(String username)
     {
-        PerformQuery query = new PerformQuery("register", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(null, "register", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
@@ -153,7 +153,7 @@ class UserAdapter extends BaseAdapter
 
     private void approveUser(String username)
     {
-        PerformQuery query = new PerformQuery("register", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(null, "register", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {

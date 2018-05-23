@@ -30,10 +30,23 @@
         android:text="@string/button_tables"
         android:textAlignment="center"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@+id/setdbAdmin"
+        app:layout_constraintBottom_toTopOf="@+id/encodedAdmin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleAdmin" />
+
+    <EditText
+        android:id="@+id/encodedAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/db_url"
+        android:inputType="none"
+        android:text="@string/text_no_db"
+        app:layout_constraintBottom_toTopOf="@+id/setdbAdmin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tablesAdmin" />
 
     <Button
         android:id="@+id/setdbAdmin"
@@ -48,6 +61,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablesAdmin" />
+        app:layout_constraintTop_toBottomOf="@+id/encodedAdmin" />
 
 </android.support.constraint.ConstraintLayout>

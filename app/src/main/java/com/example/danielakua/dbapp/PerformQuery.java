@@ -1,5 +1,7 @@
 package com.example.danielakua.dbapp;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,23 +17,45 @@ public class PerformQuery extends AsyncTask<String, String, String> {
     private AsyncResponse delegate = null;
     private String action;
     private Statement stmt = null;
+    private ProgressDialog progressDialog;
+    private boolean dismiss = false;
 
-    PerformQuery(String action, AsyncResponse delegate) {
+    PerformQuery(Context context, String action, AsyncResponse delegate) {
         this.delegate = delegate;
         this.action = action;
+        if (context != null) {
+            dismiss = true;
+            progressDialog = new ProgressDialog(context);
+        }
     }
 
     @Override
-    protected void onPreExecute() {}
+    protected void onPreExecute() {
+        if(dismiss) {
+            progressDialog.setMessage("Please Wait");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+    }
 
     @Override
-    protected void onPostExecute(String result)
-    {
+    protected void onPostExecute(String result) {
+        if (dismiss) {
+            progressDialog.dismiss();
+        }
         delegate.processFinish(result);
     }
 
     @Override
     protected void onProgressUpdate(String... text) {}
+
+    @Override
+    protected void onCancelled()
+    {
+        if (dismiss) {
+            progressDialog.dismiss();
+        }
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -103,6 +127,9 @@ public class PerformQuery extends AsyncTask<String, String, String> {
                 break;
             case "updateScore":
                 response = updateScore(params);
+                break;
+            case "getNextKey":
+                response = getNextKey(params);
                 break;
             case "getScore":
                 response = getScore(params);
@@ -326,6 +353,27 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             response.append("server error");
         }
         return response.toString();
+    }
+
+    private String getNextKey(String... params) {
+        int response = -1;
+        String table = params[0];
+        String pkey = getPrimaryKey(table);
+        try {
+            String query = String.format("SELECT MAX(%s) AS MaxKey FROM %s", pkey, table);
+            ResultSet rs = stmt.executeQuery(query);
+            if(rs.next()){
+                response = rs.getInt("MaxKey") + 1;
+            }
+            else {
+                response = 0;
+            }
+            rs.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return response == -1 ? "server error" : String.valueOf(response);
     }
 
     private String updateScore(String... params){

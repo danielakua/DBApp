@@ -13,11 +13,11 @@ import java.util.Arrays;
 
 public class GameList extends AppCompatActivity {
 
-    static final String MATCH_TABLE = "betagame";
-    static final String EXTRA_INFO = "EXTRA_INFO_TABLE_NAME";
+    static final String EXTRA_TABLE = "EXTRA_INFO_TABLE_NAME";
+    static final String EXTRA_NAME = "EXTRA_INFO_USER_NAME";
     private ArrayList<String> matches, bets;
-    protected String tableName = MATCH_TABLE;
-    protected TextView titleGamelist;
+    protected String tableName;
+    protected String userName;
     protected TextView errorGamelist;
 
     @Override
@@ -25,25 +25,31 @@ public class GameList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_list);
 
-        tableName = getIntent().getStringExtra(EXTRA_INFO);
-        titleGamelist = findViewById(R.id.titleGamelist);
+        tableName = getIntent().getStringExtra(EXTRA_TABLE);
+        userName = getIntent().getStringExtra(EXTRA_NAME);
+
         errorGamelist = findViewById(R.id.errorGamelist);
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
+        boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin") && userName.equals("admin");
+        boolean isUser = LoginPage.sharedPref.getString("username", "").equals(userName);
+
+        ((Button) findViewById(R.id.scoreGamelist)).setText(String.format(getString(R.string.button_calculate_score), isAdmin ? "Calculate" : "Show"));
         findViewById(R.id.addGameGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
         findViewById(R.id.addUserGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
-        ((Button) findViewById(R.id.scoreGamelist)).setText(String.format(getString(R.string.button_calculate_score), isAdmin ? "Calculate" : "Show"));
+        findViewById(R.id.scoreGamelist).setVisibility(isUser ? View.VISIBLE : View.INVISIBLE);
+        findViewById(R.id.submitGamelist).setVisibility(isUser ? View.VISIBLE : View.INVISIBLE);
+
         getAllMatches();
     }
 
     void getAllMatches(){
-        titleGamelist.setText(tableName);
+        ((TextView) findViewById(R.id.titleGamelist)).setText(tableName);
         errorGamelist.setText("");
-        PerformQuery query = new PerformQuery("getAllInfo", new PerformQuery.AsyncResponse() {
+        PerformQuery query = new PerformQuery(this, "getAllInfo", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 response = response.trim();
@@ -56,29 +62,34 @@ public class GameList extends AppCompatActivity {
 
     void getRelevantUser(){
         errorGamelist.setText("");
-        PerformQuery query = new PerformQuery("getColumns", new PerformQuery.AsyncResponse() {
+        PerformQuery query = new PerformQuery(this, "getColumns", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 response = response.trim();
-                bets = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split("\n")));
+                bets = response.isEmpty() || response.equals("server error")
+                        ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split("\n")));
                 loadMatches();
             }
         });
-        query.execute(tableName, LoginPage.sharedPref.getString("username", ""));
+        query.execute(tableName, userName);
     }
 
     // load the records
     void loadMatches(){
-        // show users in list view
-        ListView listView = findViewById(R.id.gameGamelist);
-        MatchAdapter adapter = new MatchAdapter(this, matches, bets, tableName, new MatchAdapter.OnDataChangeListener() {
-            @Override
-            public void onDataChanged(String response) {
-//                errorGamelist.setText(response);
-//                recreate();
-            }
-        });
-        listView.setAdapter(adapter);
+        if(bets.isEmpty()){
+            errorGamelist.setText("Not a participant");
+        }
+        else {
+            // show users in list view
+            ListView listView = findViewById(R.id.gameGamelist);
+            MatchAdapter adapter = new MatchAdapter(this, matches, bets, tableName, userName, new MatchAdapter.OnDataChangeListener() {
+                @Override
+                public void onDataChanged(String response) {
+                    recreate();
+                }
+            });
+            listView.setAdapter(adapter);
+        }
     }
 
     public void addGameClick(View view){
@@ -88,8 +99,7 @@ public class GameList extends AppCompatActivity {
     }
 
     public void addUsersClick(View view){
-        errorGamelist.setText(R.string.attempting_connection);
-        PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
+        PerformQuery query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 response = response.trim();
@@ -113,7 +123,7 @@ public class GameList extends AppCompatActivity {
         String[] colsArr = new String[columns.size()];
         colsArr = columns.toArray(colsArr);
 
-        PerformQuery query = new PerformQuery("addColumns", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, "addColumns", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
@@ -124,7 +134,6 @@ public class GameList extends AppCompatActivity {
     }
 
     public void SubmitClick(View view){
-        errorGamelist.setText(R.string.attempting_connection);
         ArrayList<String> params = new ArrayList<>();
         params.add(tableName);
         params.add(LoginPage.sharedPref.getString("username", ""));
@@ -136,7 +145,7 @@ public class GameList extends AppCompatActivity {
         String[] paramsArr = new String[params.size()];
         paramsArr = params.toArray(paramsArr);
 
-        PerformQuery query = new PerformQuery("updateColumn", new PerformQuery.AsyncResponse() {
+        PerformQuery query = new PerformQuery(this, "updateColumn", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 response = response.trim();
@@ -147,17 +156,20 @@ public class GameList extends AppCompatActivity {
     }
 
     public void CalculateScoreClick(View view) {
+        final Intent intent = new Intent(this, RecordsPageActivity.class);
+        intent.putExtra(RecordsPageActivity.EXTRA_INFO, tableName);
+
         if(!LoginPage.sharedPref.getString("username","").equals("admin")){
-            Intent intent = new Intent(this, RecordsPageActivity.class);
             startActivity(intent);
         }
-        errorGamelist.setText(R.string.attempting_connection);
-        PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
+        PerformQuery query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 response = response.trim();
                 ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
                 calculateScore(users);
+                errorGamelist.setText("");
+                startActivity(intent);
             }
         });
         query.execute(UsersList.USERS_TABLE);
@@ -170,7 +182,7 @@ public class GameList extends AppCompatActivity {
                 continue;
             }
             final String name = user.split(" ")[0];
-            PerformQuery query = new PerformQuery("getColumns", new PerformQuery.AsyncResponse() {
+            PerformQuery query = new PerformQuery(this, "getColumns", new PerformQuery.AsyncResponse() {
                 @Override
                 public void processFinish(String response) {
                     response = response.trim();
@@ -179,24 +191,20 @@ public class GameList extends AppCompatActivity {
             });
             query.execute(tableName, name);
         }
-        errorGamelist.setText("");
     }
 
     private void updateScore(String name, String[] betCol) {
         double sum = 0;
-        for(String bet :betCol){
-            System.out.println(bet);
-        }
         if(matches.size() == betCol.length) {
             for (int i = 0; i < matches.size(); i++) {
+                System.out.println(matches.get(i));
                 String[] line = matches.get(i).split(",");
-                if (!line[5].equals("0") && line[6].equals(betCol[i])) {
+                if (line[5].equals("1") && line[6].equals(betCol[i].trim())) {
                     sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1]);
                 }
             }
         }
-
-        PerformQuery query = new PerformQuery("updateScore", new PerformQuery.AsyncResponse() {
+        PerformQuery query = new PerformQuery(this, "updateScore", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) { }
         });

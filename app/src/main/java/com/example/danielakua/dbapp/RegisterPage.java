@@ -3,6 +3,7 @@ package com.example.danielakua.dbapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -12,8 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegisterPage extends AppCompatActivity {
-
-    private final String urlPattern = ".*:\\d+/(\\w+)\\?user=\\w+&password=.*";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +53,6 @@ public class RegisterPage extends AppCompatActivity {
             errorRegister.setText("Enter DB URL");
             return;
         }
-        if (!dburl.matches(urlPattern)){
-            errorRegister.setText("Bad url format, Expecting:\n [host]:[port]/[db]?user=[_]&password=[_]");
-            return;
-        }
         if (username.isEmpty()) {
             errorRegister.setText("Enter username");
             return;
@@ -84,8 +79,7 @@ public class RegisterPage extends AppCompatActivity {
         }
 
         updateDBURL(dburl);
-        errorRegister.setText(R.string.attempting_connection);
-        PerformQuery query = new PerformQuery("apply", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, "apply", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
@@ -101,9 +95,11 @@ public class RegisterPage extends AppCompatActivity {
     }
 
     private void updateDBURL(String url){
-        String dburl = String.format("jdbc:postgresql://%s", url);
-        Pattern pattern = Pattern.compile(urlPattern);
-        Matcher matcher = pattern.matcher(url);
+        byte[] valueDecoded = Base64.decode(url.getBytes(), Base64.NO_WRAP | Base64.URL_SAFE);
+        System.out.println(new String(valueDecoded));
+        String dburl = new String(valueDecoded);
+        Pattern pattern = Pattern.compile(".*:\\d+/(\\w+)\\?user=\\w+&password=.*");
+        Matcher matcher = pattern.matcher(dburl);
         if (matcher.find())
         {
             LoginPage.sharedPref.edit().putString("dburl", dburl)

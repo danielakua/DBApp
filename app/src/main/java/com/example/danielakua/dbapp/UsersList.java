@@ -40,7 +40,7 @@ public class UsersList extends AppCompatActivity {
     void getAllUsers() {
         ((TextView) findViewById(R.id.titleUserslist)).setText(tableName);
         errorUserslist.setText("");
-        PerformQuery query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse() {
+        PerformQuery query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 response = response.trim();

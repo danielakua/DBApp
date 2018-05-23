@@ -35,7 +35,7 @@ public class TablesList extends AppCompatActivity {
 
     protected void getTables(){
         final boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
-        PerformQuery query = new PerformQuery(isAdmin ? "getTables" : "getRelevantTables", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, isAdmin ? "getTables" : "getRelevantTables", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
@@ -44,7 +44,7 @@ public class TablesList extends AppCompatActivity {
             }
         });
         query.execute(LoginPage.sharedPref.getString("username", ""));
-        query = new PerformQuery("getAllUsers", new PerformQuery.AsyncResponse(){
+        query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {

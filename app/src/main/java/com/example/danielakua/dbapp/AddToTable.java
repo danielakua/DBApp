@@ -3,8 +3,6 @@ package com.example.danielakua.dbapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,8 +38,7 @@ public class AddToTable extends AppCompatActivity {
             return;
         }
         String[] params = getParamsList();
-        errorAdd.setText(R.string.attempting_connection);
-        PerformQuery query = new PerformQuery("addToTable", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, "addToTable", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
@@ -52,19 +49,18 @@ public class AddToTable extends AppCompatActivity {
         query.execute(params);
     }
 
-    public void ClearClick(View view){
+    public void ClearClick(View view) {
         columns = new ArrayList<>();
         getColumns();
     }
 
-    protected void loadColumns(){
+    protected void loadColumns() {
         AddAdapter adapter = new AddAdapter(this, columns);
         listView.setAdapter(adapter);
     }
 
     private void getColumns(){
-        errorAdd.setText(R.string.attempting_connection);
-        PerformQuery query = new PerformQuery("columns", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, "columns", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {

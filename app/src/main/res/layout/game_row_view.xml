@@ -19,6 +19,7 @@
             android:id="@+id/entryLock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
     </TableRow>
 
     <TableRow
@@ -47,6 +48,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/entryDelgame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_delete"
             android:textAllCaps="false" />
     </TableRow>
 

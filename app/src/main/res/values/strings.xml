@@ -43,9 +43,9 @@
     <string name="button_submit">Submit</string>
     <string name="button_calculate_score">%s score</string>
     <string name="button_admin">I am Admin</string>
+    <string name="text_no_db">No DB set</string>
     <string name="attempting_connection">Attempting to communicate with the server\.\.\.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="name">Name</string>
     <string name="score">Score</string>

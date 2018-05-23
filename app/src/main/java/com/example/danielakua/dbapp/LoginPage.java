@@ -82,7 +82,7 @@ public class LoginPage extends AppCompatActivity {
             return;
         }
         errorLogin.setText(R.string.attempting_connection);
-        PerformQuery query = new PerformQuery("login", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, "login", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {

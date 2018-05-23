@@ -80,7 +80,7 @@ public class CreateTable extends AppCompatActivity {
             errorTable.setText("First column can't be boolean");
             return;
         }
-        PerformQuery query = new PerformQuery("customTable", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, "customTable", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {

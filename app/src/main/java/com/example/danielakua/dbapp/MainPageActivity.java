@@ -26,12 +26,6 @@ public class MainPageActivity extends AppCompatActivity {
         findViewById(R.id.adminMain).setVisibility(name.equals("admin") ? View.VISIBLE : View.INVISIBLE);
     }
 
-    // click for records page
-    public void RecordsClick(View view) {
-        Intent intent = new Intent(this, RecordsPageActivity.class);
-        startActivity(intent);
-    }
-
     // click for game page
     public void GameClick(View view) {
         Intent intent = new Intent(this, TablesList.class);

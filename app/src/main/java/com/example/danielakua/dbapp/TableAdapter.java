@@ -93,7 +93,10 @@ class TableAdapter extends BaseAdapter
     private void GoToTable(String table) {
         boolean kind = table.equals(UsersList.USERS_TABLE) || table.equals(TablesList.MAIN_TABLE);
         Intent intent = new Intent(context, kind ? UsersList.class : GameList.class);
-        intent.putExtra(kind ? GameList.EXTRA_INFO : UsersList.EXTRA_INFO, table);
+        intent.putExtra(kind ? GameList.EXTRA_TABLE : UsersList.EXTRA_INFO, table);
+        if (!kind) {
+            intent.putExtra(GameList.EXTRA_NAME, LoginPage.sharedPref.getString("username", ""));
+        }
         context.startActivity(intent);
     }
 
@@ -109,7 +112,7 @@ class TableAdapter extends BaseAdapter
             params = new String[] { table, TablesList.MAIN_TABLE };
         }
 
-        PerformQuery query = new PerformQuery(action, new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(null, action, new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {}

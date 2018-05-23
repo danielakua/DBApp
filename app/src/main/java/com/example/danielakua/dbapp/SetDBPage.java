@@ -81,7 +81,7 @@ public class SetDBPage extends AppCompatActivity {
         LoginPage.sharedPref.edit().putString("dburl", dburl)
                                       .putString("dbname", dbname).apply();
 
-        PerformQuery query = new PerformQuery("create", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(this, "create", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {

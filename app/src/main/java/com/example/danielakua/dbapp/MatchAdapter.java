@@ -21,11 +21,14 @@ class MatchAdapter extends BaseAdapter
     private LayoutInflater mInflater;
     private ArrayList<String> mDataSource;
     private ArrayList<String> mBets;
+    private String mName;
     private String mTable;
-    private Context context;
+    private final int defColor = -570425344;
+    private final int defDisabled = android.R.color.secondary_text_dark;
 
-    MatchAdapter(Context context, ArrayList<String> items, ArrayList<String> bets, String table, OnDataChangeListener listener) {
+    MatchAdapter(Context context, ArrayList<String> items, ArrayList<String> bets, String table, String name, OnDataChangeListener listener) {
         mTable = table;
+        mName = name;
         mDataSource = items;
         mBets = bets;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,12 +57,13 @@ class MatchAdapter extends BaseAdapter
     public View getView(final int position, View convertView, ViewGroup parent) {
         View rowView;
         final boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
-        context = parent.getContext();
+        final boolean isUser = LoginPage.sharedPref.getString("username", "").equals(mName);
         final String[] entry = ((String) getItem(position)).split(",");
         boolean enabled = Integer.parseInt(entry[5]) == 0;
         rowView = mInflater.inflate(R.layout.game_row_view, parent, false);
         final TextView entryMatch = rowView.findViewById(R.id.entryMatch);
         final Button entryLock = rowView.findViewById(R.id.entryLock);
+        final Button entryDelgame = rowView.findViewById(R.id.entryDelgame);
         final Button entryLeftWin = rowView.findViewById(R.id.entryLeftWin);
         final Button entryTie = rowView.findViewById(R.id.entryTie);
         final Button entryRightWin = rowView.findViewById(R.id.entryRightWin);
@@ -75,6 +79,12 @@ class MatchAdapter extends BaseAdapter
             entryRightWin.setEnabled(enabled);
         }
 
+        if(!isUser){
+            entryLeftWin.setEnabled(false);
+            entryTie.setEnabled(false);
+            entryRightWin.setEnabled(false);
+        }
+
         int bet = mBets.get(position).equals("null") ? 0 : Integer.parseInt(mBets.get(position));
         switch(bet){
             case 1:
@@ -87,7 +97,7 @@ class MatchAdapter extends BaseAdapter
                 mBets.set(position, "0");
         }
 
-        entryLock.setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
+        entryLock.setVisibility(isAdmin && isUser ? View.VISIBLE : View.INVISIBLE);
         entryLock.setText(Integer.parseInt(entry[5]) == 0 ? "Lock" : "Unlock");
         entryLock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -96,35 +106,56 @@ class MatchAdapter extends BaseAdapter
                 updateLock(entry);
             }
         });
+        entryDelgame.setVisibility(isAdmin && isUser ? View.VISIBLE : View.INVISIBLE);
+        entryDelgame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteMatch(entry[0]);
+            }
+        });
         entryLeftWin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                entryLeftWin.setTextColor(Color.RED);
-                entryTie.setTextColor(Color.BLACK);
-                entryRightWin.setTextColor(Color.BLACK);
-                mBets.set(position,"1");
+                boolean colorB = entryLeftWin.getTextColors().getDefaultColor() == defColor;
+                entryLeftWin.setTextColor(colorB ? Color.RED : defColor);
+                entryTie.setTextColor(defColor);
+                entryRightWin.setTextColor(defColor);
+                mBets.set(position, colorB ? "1" : "0");
             }
         });
         entryTie.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                entryLeftWin.setTextColor(Color.BLACK);
-                entryTie.setTextColor(Color.RED);
-                entryRightWin.setTextColor(Color.BLACK);
-                mBets.set(position,"2");
+                boolean colorB = entryTie.getTextColors().getDefaultColor() == defColor;
+                entryLeftWin.setTextColor(defColor);
+                entryTie.setTextColor(colorB ? Color.RED : defColor);
+                entryRightWin.setTextColor(defColor);
+                mBets.set(position, colorB ? "2" : "0");
             }
         });
         entryRightWin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                entryLeftWin.setTextColor(Color.BLACK);
-                entryTie.setTextColor(Color.BLACK);
-                entryRightWin.setTextColor(Color.RED);
-                mBets.set(position,"3");
+                boolean colorB = entryRightWin.getTextColors().getDefaultColor() == defColor;
+                entryLeftWin.setTextColor(defColor);
+                entryTie.setTextColor(defColor);
+                entryRightWin.setTextColor(colorB ? Color.RED : defColor);
+                mBets.set(position, colorB ? "3" : "0");
             }
         });
         return rowView;
     }
 
-    private void updateLock(String[] entry){
-        PerformQuery query = new PerformQuery("update", new PerformQuery.AsyncResponse(){
+    private void deleteMatch(String match) {
+        PerformQuery query = new PerformQuery(null, "delete", new PerformQuery.AsyncResponse(){
+            @Override
+            public void processFinish(String response)
+            {
+                listener.onDataChanged(response);
+            }
+        });
+        query.execute(match, mTable);
+    }
+
+    private void updateLock(String[] entry) {
+        PerformQuery query = new PerformQuery(null, "update", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
             {
