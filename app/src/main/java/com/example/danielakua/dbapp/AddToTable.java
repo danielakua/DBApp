@@ -92,6 +92,9 @@ public class AddToTable extends AppCompatActivity {
             name = joinList(list);
             columns.add(new Column(name, type));
         }
+        if (!tableName.equals(UsersList.USERS_TABLE)) {
+            columns.remove(0);
+        }
         loadColumns();
     }
 

@@ -59,6 +59,7 @@ public class UsersList extends AppCompatActivity {
             @Override
             public void onDataChanged(String response) {
                 errorUserslist.setText(response);
+                recreate();
             }
         });
         listView.setAdapter(adapter);

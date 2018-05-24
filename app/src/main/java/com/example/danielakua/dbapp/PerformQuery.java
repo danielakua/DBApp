@@ -418,10 +418,9 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String response;
         String delim = ",";
         String table = params[0];
-        StringBuilder query = new StringBuilder(String.format("CREATE TABLE %s (", table));
-        query.append(String.format("%s %s PRIMARY KEY", params[1], params[2]));
+        StringBuilder query = new StringBuilder(String.format("CREATE TABLE %s (id SERIAL PRIMARY KEY", table));
 
-        for(int i = 3; i < params.length; i++){
+        for(int i = 1; i < params.length; i++){
             query.append(delim);
             query.append(String.format("%s %s", params[i++], params[i]));
         }
@@ -491,7 +490,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             } else if (checkRegister(params)) {
                 response = "user exists";
             } else {
-                String query = String.format("INSERT INTO %s (username, password, score, approved) VALUES ('%s', '%s', 0, FALSE);", UsersList.USERS_TABLE, username, password);
+                String query = String.format("INSERT INTO %s (username, password, approved) VALUES ('%s', '%s', FALSE);", UsersList.USERS_TABLE, username, password);
                 stmt.executeUpdate(query);
                 response = "applied successfully";
             }
@@ -504,28 +503,25 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
-    private boolean checkInTable(String table, String... params)
-    {
+    private boolean checkInTable(String table, String... params) {
         boolean response = false;
         String key = getPrimaryKey(table);
         String primaryValue = params.length < 3 ? params[0] : params[2];
         String query = String.format("SELECT COUNT(*) AS rowcount FROM %s WHERE %s='%s';", table, key, primaryValue);
-        try
-        {
+        try {
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             int count = rs.getInt("rowcount");
             response = count == 1;
             rs.close();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
         return response;
     }
 
-    private String performAddToTable(String... params){
+    private String performAddToTable(String... params) {
         String response;
         String table = params[0];
         String delim = "";
@@ -540,7 +536,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         }
 
         try{
-            if(checkInTable(table, params)){
+            if(table.equals(UsersList.USERS_TABLE) && checkInTable(table, params)){
                 response = "user already exists";
             }
             else {
@@ -557,8 +553,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
-    private boolean checkRegister(String... params)
-    {
+    private boolean checkRegister(String... params) {
         if(!checkInTable(UsersList.USERS_TABLE, params)){
             return false;
         }
@@ -578,8 +573,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         }
     }
 
-    private boolean checkApplied(String... params)
-    {
+    private boolean checkApplied(String... params) {
         if(!checkInTable(UsersList.USERS_TABLE, params)){
             return false;
         }
@@ -617,32 +611,23 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
-    private String performRegister(String... params)
-    {
+    private String performRegister(String... params) {
         String response;
+        String username = params[0];
+        boolean approved = Boolean.parseBoolean(params[1]);
+        String query;
         try {
-            if (checkRegister(params)) {
-                response = "user already approved";
-            } else if (!checkApplied(params)) {
-                response = "user never applied";
-            } else {
-                String username = params[0];
-                boolean approved = Boolean.parseBoolean(params[1]);
-                if (approved) {
-                    String query = String.format("UPDATE %s SET approved=TRUE WHERE username='%s';", UsersList.USERS_TABLE, username);
-                    stmt.executeUpdate(query);
-                    response = "user added";
-                }
-                else
-                {
-                    String query = String.format("DELETE FROM %s WHERE username='%s';", UsersList.USERS_TABLE, username);
-                    stmt.executeUpdate(query);
-                    response = "user rejected";
-                }
+            if (approved) {
+                query = String.format("UPDATE %s SET approved=TRUE WHERE username='%s';", UsersList.USERS_TABLE, username);
+                response = "user added";
             }
+            else {
+                query = String.format("DELETE FROM %s WHERE username='%s';", UsersList.USERS_TABLE, username);
+                response = "user rejected";
+            }
+            stmt.executeUpdate(query);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
             response = "server error";
         }

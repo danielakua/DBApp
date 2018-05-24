@@ -67,8 +67,6 @@ class UserAdapter extends BaseAdapter
             entryUser.setText(entry);
             entryDelete.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                    entryDelete.setVisibility(View.GONE);
-                    entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     deleteUser((String) entryUser.getText(), mTable);
                 }
             });
@@ -90,8 +88,6 @@ class UserAdapter extends BaseAdapter
             entryUser.setText(name);
             entryDelete.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    entryDelete.setVisibility(View.GONE);
-                    entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     deleteUser((String) entryUser.getText(), mTable);
                 }
             });
@@ -109,17 +105,11 @@ class UserAdapter extends BaseAdapter
             entryUser.setText(name);
             entryApprove.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    entryDelete.setVisibility(View.GONE);
-                    entryApprove.setVisibility(View.GONE);
-                    entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     approveUser((String) entryUser.getText());
                 }
             });
             entryDelete.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    entryDelete.setVisibility(View.GONE);
-                    entryApprove.setVisibility(View.GONE);
-                    entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     rejectUser((String) entryUser.getText());
                 }
             });

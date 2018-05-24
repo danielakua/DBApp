@@ -28,7 +28,7 @@ public class TablesList extends AppCompatActivity {
         getTables();
     }
 
-    protected void getTables(){
+    protected void getTables() {
         final boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
         PerformQuery query = new PerformQuery(this, isAdmin ? "getTables" : "getRelevantTables", new PerformQuery.AsyncResponse(){
             @Override
@@ -36,6 +36,7 @@ public class TablesList extends AppCompatActivity {
             {
                 response = response.trim();
                 tables = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split("\n")));
+                tables.remove(MAIN_TABLE);
                 loadTables();
             }
         });

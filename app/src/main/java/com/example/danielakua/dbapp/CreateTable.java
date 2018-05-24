@@ -76,10 +76,6 @@ public class CreateTable extends AppCompatActivity {
             errorTable.setText("Table must have at least one column");
             return;
         }
-        if(columns.get(0).get_type().equals("BOOLEAN")){
-            errorTable.setText("First column can't be boolean");
-            return;
-        }
         PerformQuery query = new PerformQuery(this, "customTable", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)
@@ -139,6 +135,7 @@ public class CreateTable extends AppCompatActivity {
     }
 
     private boolean checkName(String name){
+        if (name.equals("id")) { return true; }
         for(Column column : columns){
             if(column.get_name().equals(name)){
                 return true;
