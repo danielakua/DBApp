@@ -13,7 +13,6 @@ public class TablesList extends AppCompatActivity {
 
     protected static final String MAIN_TABLE = "main_table";
     protected ArrayList<String> tables;
-    protected ArrayList<String> viewables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +23,8 @@ public class TablesList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(LoginPage.sharedPref.getString("username", "").equals("admin")) {
-            findViewById(R.id.addTableTableslist).setVisibility(View.VISIBLE);
-        }
-        else {
-            findViewById(R.id.addTableTableslist).setVisibility(View.GONE);
-        }
+        boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
+        findViewById(R.id.addTableTableslist).setVisibility(isAdmin ? View.VISIBLE : View.GONE);
         getTables();
     }
 
@@ -41,19 +36,10 @@ public class TablesList extends AppCompatActivity {
             {
                 response = response.trim();
                 tables = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split("\n")));
-            }
-        });
-        query.execute(LoginPage.sharedPref.getString("username", ""));
-        query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse(){
-            @Override
-            public void processFinish(String response)
-            {
-                response = response.trim();
-                viewables = new ArrayList<>(Arrays.asList(response.split(",")));
                 loadTables();
             }
         });
-        query.execute(MAIN_TABLE);
+        query.execute(LoginPage.sharedPref.getString("username", ""));
     }
 
     // click for create table page
@@ -64,7 +50,7 @@ public class TablesList extends AppCompatActivity {
 
     protected void loadTables() {
         ListView listView = findViewById(R.id.tables);
-        TableAdapter adapter = new TableAdapter(this, tables, viewables);
+        TableAdapter adapter = new TableAdapter(this, tables);
         listView.setAdapter(adapter);
     }
 }

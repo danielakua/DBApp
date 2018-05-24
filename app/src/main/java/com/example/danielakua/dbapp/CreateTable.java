@@ -86,9 +86,20 @@ public class CreateTable extends AppCompatActivity {
             {
                 response = response.trim();
                 errorTable.setText(response);
+                if(response.startsWith("created table")) {
+                    addScoreColumn();
+                }
             }
         });
         query.execute(getParamsList());
+    }
+
+    protected void addScoreColumn() {
+        PerformQuery query = new PerformQuery(this, "addColumn", new PerformQuery.AsyncResponse(){
+            @Override
+            public void processFinish(String response) { }
+        });
+        query.execute(UsersList.USERS_TABLE, tableName, "FLOAT");
     }
 
     protected void loadColumns(){
@@ -124,7 +135,7 @@ public class CreateTable extends AppCompatActivity {
         }
 
         loadColumns();
-        newColumnL.setVisibility(View.GONE);
+        newColumnL.setVisibility(View.INVISIBLE);
     }
 
     private boolean checkName(String name){

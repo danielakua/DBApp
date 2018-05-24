@@ -17,12 +17,10 @@ class TableAdapter extends BaseAdapter
 
     private LayoutInflater mInflater;
     private ArrayList<String> mDataSource;
-    private ArrayList<String> mViewables;
     private Context context;
 
-    TableAdapter(Context context, ArrayList<String> items, ArrayList<String> viewables) {
+    TableAdapter(Context context, ArrayList<String> items) {
         mDataSource = items;
-        mViewables = viewables;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -49,14 +47,12 @@ class TableAdapter extends BaseAdapter
         View rowView;
         // Get view for row item
         context = parent.getContext();
-        rowView = mInflater.inflate(R.layout.simple_user_view, parent, false);
+        rowView = mInflater.inflate(R.layout.simple_column_view, parent, false);
         final String entry = (String) getItem(position);
-        final TextView entryUser = rowView.findViewById(R.id.entryUser);
+        final TextView entryName = rowView.findViewById(R.id.entryName);
         final Button entryTable = rowView.findViewById(R.id.entryDelete);
-        final Button viewable = rowView.findViewById(R.id.entryPW);
 
-        entryUser.setText(entry);
-
+        entryName.setText(entry);
         entryTable.setText("View");
         entryTable.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -64,29 +60,6 @@ class TableAdapter extends BaseAdapter
             }
         });
 
-        if(LoginPage.sharedPref.getString("username", "").equals("admin")) {
-            if(entry.equals(TablesList.MAIN_TABLE) || entry.equals(UsersList.USERS_TABLE)){
-                viewable.setVisibility(View.INVISIBLE);
-            }
-            else {
-                viewable.setText("Viewable");
-                viewable.setBackgroundColor(CheckViewable(entry) ? Color.GREEN : Color.RED);
-                viewable.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        if (CheckViewable(entry)) {
-                            mViewables.remove(entry);
-                        } else {
-                            mViewables.add(entry);
-                        }
-                        viewable.setBackgroundColor(CheckViewable(entry) ? Color.GREEN : Color.RED);
-                        SetViewable(entry);
-                    }
-                });
-            }
-        }
-        else {
-            viewable.setVisibility(View.GONE);
-        }
         return rowView;
     }
 
@@ -98,29 +71,5 @@ class TableAdapter extends BaseAdapter
             intent.putExtra(GameList.EXTRA_NAME, LoginPage.sharedPref.getString("username", ""));
         }
         context.startActivity(intent);
-    }
-
-    private void SetViewable(String table) {
-        String action;
-        String[] params;
-        if(CheckViewable(table)){
-            action = "addToTable";
-            params = new String[] { TablesList.MAIN_TABLE, "name", table };
-        }
-        else{
-            action = "delete";
-            params = new String[] { table, TablesList.MAIN_TABLE };
-        }
-
-        PerformQuery query = new PerformQuery(null, action, new PerformQuery.AsyncResponse(){
-            @Override
-            public void processFinish(String response)
-            {}
-        });
-        query.execute(params);
-    }
-
-    private boolean CheckViewable(String table){
-        return mViewables.contains(table);
     }
 }

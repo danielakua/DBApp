@@ -336,7 +336,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         StringBuilder response = new StringBuilder("");
         String delim = "";
         String table = params[0];
-        String score = "score";
+        String score = params[1];
         String primaryKey = getPrimaryKey(table);
         try{
             String query = String.format("SELECT %s,%s FROM %s;", primaryKey, score, table);
@@ -344,7 +344,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             while ( rs.next() ) {
                 response.append(delim);
                 delim = "\n";
-                response.append(String.format("%s,%s", rs.getString(primaryKey), rs.getString(score)));
+                response.append(String.format("%s,%s", rs.getString(primaryKey), rs.getFloat(score)));
             }
             rs.close();
         }
@@ -379,10 +379,10 @@ public class PerformQuery extends AsyncTask<String, String, String> {
     private String updateScore(String... params){
         String response;
         String table = params[0];
-        String score = "score";
+        String score = params[1];
         String primaryKey = getPrimaryKey(table);
-        String primaryValue = params[1];
-        String newScore = params[2];
+        String primaryValue = params[2];
+        String newScore = params[3];
         try{
             String query = String.format("UPDATE %s SET %s=%s WHERE %s='%s';", table, score, newScore, primaryKey, primaryValue);
             stmt.executeUpdate(query);

@@ -42,7 +42,7 @@ public class RecordsPageActivity extends AppCompatActivity implements AdapterVie
                 loadRecords();
             }
         });
-        query.execute(UsersList.USERS_TABLE);
+        query.execute(UsersList.USERS_TABLE, tableName);
     }
 
     // load the records

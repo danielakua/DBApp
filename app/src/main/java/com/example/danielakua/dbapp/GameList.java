@@ -77,7 +77,7 @@ public class GameList extends AppCompatActivity {
     // load the records
     void loadMatches(){
         if(bets.isEmpty()){
-            errorGamelist.setText("Not a participant");
+            errorGamelist.setText("Nothing To Show");
         }
         else {
             // show users in list view
@@ -210,6 +210,6 @@ public class GameList extends AppCompatActivity {
             @Override
             public void processFinish(String response) { }
         });
-        query.execute(UsersList.USERS_TABLE, name, Double.toString(sum));
+        query.execute(UsersList.USERS_TABLE, tableName, name, Double.toString(sum));
     }
 }
