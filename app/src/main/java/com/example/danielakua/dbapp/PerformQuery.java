@@ -128,8 +128,8 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             case "updateScore":
                 response = updateScore(params);
                 break;
-            case "getNextKey":
-                response = getNextKey(params);
+            case "getValue":
+                response = getValue(params);
                 break;
             case "getScore":
                 response = getScore(params);
@@ -198,22 +198,6 @@ public class PerformQuery extends AsyncTask<String, String, String> {
 
     }
 
-//    private int getRowsCount(String table){
-//        int response;
-//        try {
-//            String query = String.format("SELECT COUNT(*) AS rowcount FROM %s;", table);
-//            ResultSet rs = stmt.executeQuery(query);
-//            rs.next();
-//            response = rs.getInt("rowcount");
-//            rs.close();
-//        }
-//        catch (Exception e){
-//            response = 0;
-//            e.printStackTrace();
-//        }
-//        return response;
-//    }
-
     private String performAddColumn(String... params) {
         String response;
         String table = params[0];
@@ -279,16 +263,15 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         StringBuilder response = new StringBuilder("");
         String table = params[0];
         try{
-            String query = String.format("SELECT * FROM %s LIMIT 1;", table);
+            String query = String.format("SELECT column_name, data_type FROM information_schema.columns WHERE table_name='%s';", table);
             ResultSet rs = stmt.executeQuery(query);
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnCount = rsmd.getColumnCount();
-
-            for (int i = 1; i <= columnCount; i++ ) {
-                String name = rsmd.getColumnName(i);
-                String type = rsmd.getColumnTypeName(i);
+            while(rs.next()) {
+                String name = rs.getString("column_name");
+                String type = rs.getString("data_type");
                 response.append(String.format("%s %s%n", name, type));
             }
+            rs.close();
+            System.out.println(response.toString());
         }
         catch (Exception e){
             e.printStackTrace();
@@ -332,6 +315,25 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response.toString();
     }
 
+    private String getValue(String... params) {
+        Object response;
+        String table = params[0];
+        String row = params[1];
+        String column = params[2];
+        String primaryKey = getPrimaryKey(table);
+        try {
+            String query = String.format("SELECT %s FROM %s WHERE %s='%s';", column, table, primaryKey, row);
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            response = rs.getObject(column);
+            rs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = "server error";
+        }
+        return response.toString();
+    }
+
     private String getScore(String... params){
         StringBuilder response = new StringBuilder("");
         String delim = "";
@@ -353,27 +355,6 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             response.append("server error");
         }
         return response.toString();
-    }
-
-    private String getNextKey(String... params) {
-        int response = -1;
-        String table = params[0];
-        String pkey = getPrimaryKey(table);
-        try {
-            String query = String.format("SELECT MAX(%s) AS MaxKey FROM %s", pkey, table);
-            ResultSet rs = stmt.executeQuery(query);
-            if(rs.next()){
-                response = rs.getInt("MaxKey") + 1;
-            }
-            else {
-                response = 0;
-            }
-            rs.close();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return response == -1 ? "server error" : String.valueOf(response);
     }
 
     private String updateScore(String... params){
@@ -414,7 +395,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
-    private String performCustom(String... params){
+    private String performCustom(String... params) {
         String response;
         String delim = ",";
         String table = params[0];
@@ -437,30 +418,32 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
-    private String performCreate()
-    {
+    private String performCreate() {
         String response;
         String query;
-        try
-        {
-            query = String.format("CREATE TABLE IF NOT EXISTS %s (username TEXT PRIMARY KEY, password TEXT, score FLOAT, approved BOOLEAN)", UsersList.USERS_TABLE);
+        try {
+            query = String.format("CREATE TABLE IF NOT EXISTS %s (name TEXT PRIMARY KEY, columns INTEGER)", TablesList.MAIN_TABLE);
+            System.out.println(query);
             stmt.executeUpdate(query);
 
-            query = String.format("CREATE TABLE IF NOT EXISTS %s (name TEXT PRIMARY KEY)", TablesList.MAIN_TABLE);
+            query = String.format("CREATE TABLE IF NOT EXISTS %s (username TEXT PRIMARY KEY, password TEXT, approved BOOLEAN)", UsersList.USERS_TABLE);
+            System.out.println(query);
             stmt.executeUpdate(query);
+
+            if(!checkInTable(TablesList.MAIN_TABLE, UsersList.USERS_TABLE)) {
+                performAddToTable(TablesList.MAIN_TABLE, "name", UsersList.USERS_TABLE, "columns", "3");
+            }
 
             response = String.format("created tables: %s, %s", UsersList.USERS_TABLE, TablesList.MAIN_TABLE);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
             response = "server error";
         }
         return response;
     }
 
-    private String performDelete(String... params)
-    {
+    private String performDelete(String... params) {
         String response;
         String username = params[0];
         String table = params[1];
@@ -479,8 +462,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
-    private String performApply(String... params)
-    {
+    private String performApply(String... params) {
         String response;
         String username = params[0];
         String password = params[1];
@@ -537,13 +519,13 @@ public class PerformQuery extends AsyncTask<String, String, String> {
 
         try{
             if(table.equals(UsersList.USERS_TABLE) && checkInTable(table, params)){
-                response = "user already exists";
+                response = "already exists";
             }
             else {
                 String query = String.format("INSERT INTO %s (%s) VALUES (%s)", table, keys.toString(), values.toString());
                 System.out.println(query);
                 stmt.executeUpdate(query);
-                response = "user added";
+                response = "added";
             }
         }
         catch (Exception e){

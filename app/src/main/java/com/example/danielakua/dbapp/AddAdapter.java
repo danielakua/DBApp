@@ -91,9 +91,6 @@ class AddAdapter extends BaseAdapter
                 entryValue.setInputType(InputType.TYPE_CLASS_NUMBER);
                 entry.set_value("0");
             }
-            if(entry.get_type().equals("FLOAT")){
-                entry.set_value("0.0");
-            }
             entryValue.setText(entry.get_value());
             entryValue.addTextChangedListener(new TextWatcher() {
                 @Override

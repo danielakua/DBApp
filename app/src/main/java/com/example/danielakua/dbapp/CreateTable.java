@@ -83,6 +83,7 @@ public class CreateTable extends AppCompatActivity {
                 response = response.trim();
                 errorTable.setText(response);
                 if(response.startsWith("created table")) {
+                    addToMainTable();
                     addScoreColumn();
                 }
             }
@@ -96,6 +97,14 @@ public class CreateTable extends AppCompatActivity {
             public void processFinish(String response) { }
         });
         query.execute(UsersList.USERS_TABLE, tableName, "FLOAT");
+    }
+
+    protected void addToMainTable() {
+        PerformQuery query = new PerformQuery(this, "addToTable", new PerformQuery.AsyncResponse(){
+            @Override
+            public void processFinish(String response) { }
+        });
+        query.execute(TablesList.MAIN_TABLE, "name", tableName, "columns", String.valueOf(columns.size()));
     }
 
     protected void loadColumns(){

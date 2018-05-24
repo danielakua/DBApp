@@ -76,15 +76,15 @@ public class AddToTable extends AppCompatActivity {
         String name, type;
         ArrayList<String> cols = new ArrayList<>(Arrays.asList(response.split("\n")));
         for(String col : cols){
-            ArrayList<String> list = new ArrayList<>(Arrays.asList(col.split(" ")));
+            ArrayList<String> list = new ArrayList<>(Arrays.asList(col.split(" ", 2)));
             switch(list.remove(list.size() - 1)){
                 case "text":
                     type = "TEXT"; break;
-                case "int4":
+                case "integer":
                     type = "INTEGER"; break;
-                case "bool":
+                case "boolean":
                     type = "BOOLEAN"; break;
-                case "float8":
+                case "double precision":
                     type = "FLOAT"; break;
                 default:
                     type = "";
@@ -95,7 +95,21 @@ public class AddToTable extends AppCompatActivity {
         if (!tableName.equals(UsersList.USERS_TABLE)) {
             columns.remove(0);
         }
-        loadColumns();
+        removeIrrelevantColumns();
+    }
+
+    private void removeIrrelevantColumns() {
+        PerformQuery query = new PerformQuery(this, "getValue", new PerformQuery.AsyncResponse(){
+            @Override
+            public void processFinish(String response)
+            {
+                response = response.trim();
+                int cols = Integer.parseInt(response);
+                columns = new ArrayList<>(columns.subList(0, cols));
+                loadColumns();
+            }
+        });
+        query.execute(TablesList.MAIN_TABLE, tableName, "columns");
     }
 
     private String joinList(ArrayList<String> list){
