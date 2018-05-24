@@ -33,7 +33,7 @@ public class UsersList extends AppCompatActivity {
         super.onResume();
 
         boolean isMain = tableName.equals(TablesList.MAIN_TABLE);
-        findViewById(R.id.addUserUserslist).setVisibility(isMain ? View.INVISIBLE : View.VISIBLE);
+        findViewById(R.id.addUserUserslist).setVisibility(isMain ? View.GONE : View.VISIBLE);
         getAllUsers();
     }
 

@@ -23,7 +23,7 @@ public class MainPageActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        findViewById(R.id.adminMain).setVisibility(name.equals("admin") ? View.VISIBLE : View.INVISIBLE);
+        findViewById(R.id.adminMain).setVisibility(name.equals("admin") ? View.VISIBLE : View.GONE);
     }
 
     // click for game page

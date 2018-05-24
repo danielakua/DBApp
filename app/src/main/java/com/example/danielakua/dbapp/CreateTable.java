@@ -58,7 +58,7 @@ public class CreateTable extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        newColumnL.setVisibility(View.INVISIBLE);
+        newColumnL.setVisibility(View.GONE);
     }
 
     public void AddColumnClick(View view){
@@ -124,7 +124,7 @@ public class CreateTable extends AppCompatActivity {
         }
 
         loadColumns();
-        newColumnL.setVisibility(View.INVISIBLE);
+        newColumnL.setVisibility(View.GONE);
     }
 
     private boolean checkName(String name){

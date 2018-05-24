@@ -67,12 +67,12 @@ class UserAdapter extends BaseAdapter
             entryUser.setText(entry);
             entryDelete.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                    entryDelete.setVisibility(View.INVISIBLE);
+                    entryDelete.setVisibility(View.GONE);
                     entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     deleteUser((String) entryUser.getText(), mTable);
                 }
             });
-            entryPW.setVisibility(mTable.equals(TablesList.MAIN_TABLE) ? View.INVISIBLE : View.VISIBLE);
+            entryPW.setVisibility(mTable.equals(TablesList.MAIN_TABLE) ? View.GONE : View.VISIBLE);
         }
         return rowView;
     }
@@ -90,7 +90,7 @@ class UserAdapter extends BaseAdapter
             entryUser.setText(name);
             entryDelete.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    entryDelete.setVisibility(View.INVISIBLE);
+                    entryDelete.setVisibility(View.GONE);
                     entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     deleteUser((String) entryUser.getText(), mTable);
                 }
@@ -109,16 +109,16 @@ class UserAdapter extends BaseAdapter
             entryUser.setText(name);
             entryApprove.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    entryDelete.setVisibility(View.INVISIBLE);
-                    entryApprove.setVisibility(View.INVISIBLE);
+                    entryDelete.setVisibility(View.GONE);
+                    entryApprove.setVisibility(View.GONE);
                     entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     approveUser((String) entryUser.getText());
                 }
             });
             entryDelete.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    entryDelete.setVisibility(View.INVISIBLE);
-                    entryApprove.setVisibility(View.INVISIBLE);
+                    entryDelete.setVisibility(View.GONE);
+                    entryApprove.setVisibility(View.GONE);
                     entryUser.setPaintFlags(entryUser.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     rejectUser((String) entryUser.getText());
                 }

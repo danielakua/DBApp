@@ -38,10 +38,10 @@ public class GameList extends AppCompatActivity {
         boolean isUser = LoginPage.sharedPref.getString("username", "").equals(userName);
 
         ((Button) findViewById(R.id.scoreGamelist)).setText(String.format(getString(R.string.button_calculate_score), isAdmin ? "Calculate" : "Show"));
-        findViewById(R.id.addGameGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
-        findViewById(R.id.addUserGamelist).setVisibility(isAdmin ? View.VISIBLE : View.INVISIBLE);
-        findViewById(R.id.scoreGamelist).setVisibility(isUser ? View.VISIBLE : View.INVISIBLE);
-        findViewById(R.id.submitGamelist).setVisibility(isUser ? View.VISIBLE : View.INVISIBLE);
+        findViewById(R.id.addGameGamelist).setVisibility(isAdmin ? View.VISIBLE : View.GONE);
+        findViewById(R.id.addUserGamelist).setVisibility(isAdmin ? View.VISIBLE : View.GONE);
+        findViewById(R.id.scoreGamelist).setVisibility(isUser ? View.VISIBLE : View.GONE);
+        findViewById(R.id.submitGamelist).setVisibility(isUser ? View.VISIBLE : View.GONE);
 
         getAllMatches();
     }
@@ -133,11 +133,11 @@ public class GameList extends AppCompatActivity {
         query.execute(colsArr);
     }
 
-    public void SubmitClick(View view){
+    public void SubmitClick(View view) {
         ArrayList<String> params = new ArrayList<>();
         params.add(tableName);
         params.add(LoginPage.sharedPref.getString("username", ""));
-        for(int i = 0; i < bets.size(); i++){
+        for(int i = 0; i < bets.size(); i++) {
             params.add(matches.get(i).split(",")[0]);
             params.add(bets.get(i));
         }
@@ -162,17 +162,19 @@ public class GameList extends AppCompatActivity {
         if(!LoginPage.sharedPref.getString("username","").equals("admin")){
             startActivity(intent);
         }
-        PerformQuery query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
-            @Override
-            public void processFinish(String response) {
-                response = response.trim();
-                ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
-                calculateScore(users);
-                errorGamelist.setText("");
-                startActivity(intent);
-            }
-        });
-        query.execute(UsersList.USERS_TABLE);
+        else {
+            PerformQuery query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
+                @Override
+                public void processFinish(String response) {
+                    response = response.trim();
+                    ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
+                    calculateScore(users);
+                    errorGamelist.setText("");
+                    startActivity(intent);
+                }
+            });
+            query.execute(UsersList.USERS_TABLE);
+        }
     }
 
     private void calculateScore(ArrayList<String> users) {

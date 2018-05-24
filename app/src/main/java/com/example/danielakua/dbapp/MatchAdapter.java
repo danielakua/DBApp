@@ -97,7 +97,7 @@ class MatchAdapter extends BaseAdapter
                 mBets.set(position, "0");
         }
 
-        entryLock.setVisibility(isAdmin && isUser ? View.VISIBLE : View.INVISIBLE);
+        entryLock.setVisibility(isAdmin && isUser ? View.VISIBLE : View.GONE);
         entryLock.setText(Integer.parseInt(entry[5]) == 0 ? "Lock" : "Unlock");
         entryLock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -106,7 +106,7 @@ class MatchAdapter extends BaseAdapter
                 updateLock(entry);
             }
         });
-        entryDelgame.setVisibility(isAdmin && isUser ? View.VISIBLE : View.INVISIBLE);
+        entryDelgame.setVisibility(isAdmin && isUser ? View.VISIBLE : View.GONE);
         entryDelgame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

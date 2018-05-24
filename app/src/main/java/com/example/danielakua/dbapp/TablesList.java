@@ -28,7 +28,7 @@ public class TablesList extends AppCompatActivity {
             findViewById(R.id.addTableTableslist).setVisibility(View.VISIBLE);
         }
         else {
-            findViewById(R.id.addTableTableslist).setVisibility(View.INVISIBLE);
+            findViewById(R.id.addTableTableslist).setVisibility(View.GONE);
         }
         getTables();
     }

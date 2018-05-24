@@ -42,7 +42,7 @@ public class UpdateInfo extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         if(isAdmin){
-            oldInfo.setVisibility(View.INVISIBLE);
+            oldInfo.setVisibility(View.GONE);
         }
     }
 

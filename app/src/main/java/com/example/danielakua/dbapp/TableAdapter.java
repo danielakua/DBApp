@@ -85,7 +85,7 @@ class TableAdapter extends BaseAdapter
             }
         }
         else {
-            viewable.setVisibility(View.INVISIBLE);
+            viewable.setVisibility(View.GONE);
         }
         return rowView;
     }
