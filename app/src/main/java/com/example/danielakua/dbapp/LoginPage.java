@@ -50,7 +50,6 @@ public class LoginPage extends AppCompatActivity {
 
     // click for register page
     public void RegisterClick(View view) {
-        sharedPref.edit().clear().apply();
         Intent intent = new Intent(this, RegisterPage.class);
         startActivity(intent);
         finish();
@@ -81,7 +80,6 @@ public class LoginPage extends AppCompatActivity {
             GoToMain(adminuser);
             return;
         }
-        errorLogin.setText(R.string.attempting_connection);
         PerformQuery query = new PerformQuery(this, "login", new PerformQuery.AsyncResponse(){
             @Override
             public void processFinish(String response)

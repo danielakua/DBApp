@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
@@ -16,6 +17,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
 
     private AsyncResponse delegate = null;
     private String action;
+    private Connection c = null;
     private Statement stmt = null;
     private ProgressDialog progressDialog;
     private boolean dismiss = false;
@@ -60,7 +62,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         String response = "";
-        Connection c;
+
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -69,7 +71,6 @@ public class PerformQuery extends AsyncTask<String, String, String> {
 
             c = DriverManager.getConnection(dburl);
             c.setAutoCommit(false);
-            stmt = c.createStatement();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -77,6 +78,9 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         }
 
         switch (action) {
+            case "ping":
+                response = "";
+                break;
             case "create":
                 response = performCreate();
                 break;
@@ -163,6 +167,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         try {
             String query = String.format("SELECT table_name FROM information_schema.columns WHERE column_name = '%s'", column);
             System.out.println(query);
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()) {
                 response.append(delim);
@@ -183,6 +188,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         try {
             String query = "SELECT table_name FROM information_schema.tables WHERE table_schema='public' " +
                            "AND table_type='BASE TABLE' AND table_catalog='" + LoginPage.sharedPref.getString("dbname", "dotgamedb") + "';";
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()) {
                 response.append(delim);
@@ -206,6 +212,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         try{
             String query = String.format("ALTER TABLE %s ADD COLUMN %s %s;", table, col, type);
             System.out.println(query);
+            stmt = c.createStatement();
             stmt.executeUpdate(query);
             response = String.format("added column %s to table %s", col, table);
         }
@@ -249,6 +256,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         query.append("END");
         try {
             System.out.println(query.toString());
+            stmt = c.createStatement();
             stmt.executeUpdate(query.toString());
             response = "updated successfully";
         }
@@ -264,6 +272,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String table = params[0];
         try{
             String query = String.format("SELECT column_name, data_type FROM information_schema.columns WHERE table_name='%s';", table);
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()) {
                 String name = rs.getString("column_name");
@@ -293,6 +302,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         }
         query.append(String.format(" FROM %s ORDER BY %s DESC", table, pkey));
         try{
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query.toString());
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
@@ -323,6 +333,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String primaryKey = getPrimaryKey(table);
         try {
             String query = String.format("SELECT %s FROM %s WHERE %s='%s';", column, table, primaryKey, row);
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             response = rs.getObject(column);
@@ -342,6 +353,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String primaryKey = getPrimaryKey(table);
         try{
             String query = String.format("SELECT %s,%s FROM %s;", primaryKey, score, table);
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while ( rs.next() ) {
                 response.append(delim);
@@ -366,6 +378,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String newScore = params[3];
         try{
             String query = String.format("UPDATE %s SET %s=%s WHERE %s='%s';", table, score, newScore, primaryKey, primaryValue);
+            stmt = c.createStatement();
             stmt.executeUpdate(query);
             response = String.format("%s updated", score);
         }
@@ -385,6 +398,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String updateValue = params[3];
         try{
             String query = String.format("UPDATE %s SET %s='%s' WHERE %s='%s';", table, updateKey, updateValue, primaryKey, primaryValue);
+            stmt = c.createStatement();
             stmt.executeUpdate(query);
             response = String.format("%s updated", updateKey);
         }
@@ -408,6 +422,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         query.append(")");
         System.out.println(query.toString());
         try {
+            stmt = c.createStatement();
             stmt.executeUpdate(query.toString());
             response = String.format("created table: %s", table);
         }
@@ -424,6 +439,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         try {
             query = String.format("CREATE TABLE IF NOT EXISTS %s (name TEXT PRIMARY KEY, columns INTEGER)", TablesList.MAIN_TABLE);
             System.out.println(query);
+            stmt = c.createStatement();
             stmt.executeUpdate(query);
 
             query = String.format("CREATE TABLE IF NOT EXISTS %s (username TEXT PRIMARY KEY, password TEXT, approved BOOLEAN)", UsersList.USERS_TABLE);
@@ -451,6 +467,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         try
         {
             String query = String.format("DELETE FROM %s WHERE %s='%s';", table, key, username);
+            stmt = c.createStatement();
             stmt.executeUpdate(query);
             response = "user deleted";
         }
@@ -473,7 +490,15 @@ public class PerformQuery extends AsyncTask<String, String, String> {
                 response = "user exists";
             } else {
                 String query = String.format("INSERT INTO %s (username, password, approved) VALUES ('%s', '%s', FALSE);", UsersList.USERS_TABLE, username, password);
+                stmt = c.createStatement();
                 stmt.executeUpdate(query);
+//                String query = "INSERT INTO ? (username, password, approved) VALUES (?, ?, FALSE);";
+//                PreparedStatement stmt = c.prepareStatement(query);
+//                stmt.setString(1, UsersList.USERS_TABLE);
+//                stmt.setString(2, username);
+//                stmt.setString(3, password);
+//                stmt.executeUpdate();
+//                stmt.close();
                 response = "applied successfully";
             }
         }
@@ -490,7 +515,9 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String key = getPrimaryKey(table);
         String primaryValue = params.length < 3 ? params[0] : params[2];
         String query = String.format("SELECT COUNT(*) AS rowcount FROM %s WHERE %s='%s';", table, key, primaryValue);
+        System.out.println(query);
         try {
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             int count = rs.getInt("rowcount");
@@ -524,6 +551,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             else {
                 String query = String.format("INSERT INTO %s (%s) VALUES (%s)", table, keys.toString(), values.toString());
                 System.out.println(query);
+                stmt = c.createStatement();
                 stmt.executeUpdate(query);
                 response = "added";
             }
@@ -540,8 +568,8 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             return false;
         }
         String query = String.format("SELECT approved FROM %s WHERE username='%s';", UsersList.USERS_TABLE, params[0]);
-        try
-        {
+        try {
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             boolean approved = rs.getBoolean("approved");
@@ -560,8 +588,8 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             return false;
         }
         String query = String.format("SELECT approved FROM %s WHERE username='%s';", UsersList.USERS_TABLE, params[0]);
-        try
-        {
+        try {
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             boolean approved = rs.getBoolean("approved");
@@ -575,19 +603,15 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         }
     }
 
-    private String performLogin(String... params)
-    {
+    private String performLogin(String... params) {
         String response;
-        if (checkApplied(params))
-        {
+        if (checkApplied(params)) {
             response = "user awaiting approval";
         }
-        else if (checkRegister(params) && getPassword(params[0], UsersList.USERS_TABLE).equals(params[1]))
-        {
+        else if (checkRegister(params) && getPassword(params[0], UsersList.USERS_TABLE).equals(params[1])) {
             response = "login successful";
         }
-        else
-        {
+        else {
             response = "wrong username or password";
         }
         return response;
@@ -607,6 +631,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
                 query = String.format("DELETE FROM %s WHERE username='%s';", UsersList.USERS_TABLE, username);
                 response = "user rejected";
             }
+            stmt = c.createStatement();
             stmt.executeUpdate(query);
         }
         catch (Exception e) {
@@ -616,32 +641,30 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
-    private String getPassword(String username, String table)
-    {
+    private String getPassword(String username, String table) {
         String password = "";
         String query = String.format("SELECT password FROM %s WHERE username='%s';", table, username);
-        try
-        {
+        try {
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             rs.next();
             password = rs.getString("password").trim();
             rs.close();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
         return password;
     }
 
-    private String performKeysFromTable(String... params)
-    {
+    private String performKeysFromTable(String... params) {
         StringBuilder response = new StringBuilder("");
         String delim = "";
         String table = params[0];
         String pkey = getPrimaryKey(table);
         String query = String.format("SELECT %s%s FROM %s ORDER BY %s DESC", pkey, table.equals(UsersList.USERS_TABLE) ? ",approved" : "", table, pkey);
         try {
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while ( rs.next() ) {
                 response.append(delim);
@@ -662,14 +685,14 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response.toString();
     }
 
-    private String performAllFromTable(String... params)
-    {
+    private String performAllFromTable(String... params) {
         StringBuilder response = new StringBuilder("");
         String maindelim = "";
         String table = params[0];
         String pkey = getPrimaryKey(table);
         String query = String.format("SELECT * FROM %s ORDER BY %s DESC", table, pkey);
         try {
+            stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             ResultSetMetaData rsmt = rs.getMetaData();
             int columnCount = rsmt.getColumnCount();
@@ -686,8 +709,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             }
             rs.close();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
         return response.toString();
