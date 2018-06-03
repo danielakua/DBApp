@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">The World Cap Champ</string>
+    <string name="app_name">The Champ</string>
     <string name="button_login">Login</string>
     <string name="button_register">Register</string>
     <string name="button_cancel">Cancel</string>

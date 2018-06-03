@@ -14,29 +14,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".LoginPage" />
-        <activity android:name=".MainPageActivity" />
-        <activity android:name=".RecordsPageActivity" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
         <activity android:name=".RegisterPage" />
+        <activity android:name=".UpdateInfo" />
+        <activity android:name=".MainPageActivity" />
+
+        <activity android:name=".RecordsPageActivity" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
         <activity android:name=".UsersList" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
         <activity android:name=".SetDBPage" android:parentActivityName="com.example.danielakua.dbapp.AdminPage"/>
-        <activity android:name=".UpdateInfo" />
         <activity android:name=".AdminPage" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
+
         <activity android:name=".CreateTable" />
+
         <activity
             android:name=".AddToTable"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".TablesList"
             android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
 
         <activity android:name=".GameList" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity" />
+
         <activity android:name=".DBMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
