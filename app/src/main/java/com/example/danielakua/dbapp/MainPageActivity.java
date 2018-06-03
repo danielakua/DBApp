@@ -71,9 +71,8 @@ public class MainPageActivity extends AppCompatActivity {
         spinner.setAdapter(dataAdapter);
     }
 
-    public void CalculateScoreClick(View view) {
+    public void RankingClick(View view) {
         final Intent intent = new Intent(this, RecordsPageActivity.class);
-        spinner = (Spinner) findViewById(R.id.spinner);
         String.valueOf(spinner.getSelectedItem());
 
         intent.putExtra(RecordsPageActivity.EXTRA_INFO, String.valueOf(spinner.getSelectedItem()));
@@ -89,7 +88,9 @@ public class MainPageActivity extends AppCompatActivity {
 
     // click for game page
     public void GameClick(View view) {
-        Intent intent = new Intent(this, TablesList.class);
+        Intent intent = new Intent(this, GameList.class);
+        intent.putExtra(GameList.EXTRA_TABLE, String.valueOf(spinner.getSelectedItem()));
+        intent.putExtra(GameList.EXTRA_NAME, LoginPage.sharedPref.getString("username", ""));
         startActivity(intent);
     }
 

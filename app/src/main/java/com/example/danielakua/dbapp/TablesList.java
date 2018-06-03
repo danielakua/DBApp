@@ -19,9 +19,6 @@ public class TablesList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tables_list);
-        ActionBar actionBar = getSupportActionBar();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//setHomeButtonEnabled(true);
     }
 
     @Override

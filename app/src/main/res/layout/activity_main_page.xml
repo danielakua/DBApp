@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:onClick="CalculateScoreClick"
+            android:onClick="RankingClick"
             android:text="@string/Rankings"
             android:textAllCaps="false"
             app:layout_constraintBottom_toTopOf="@+id/adminMain"
