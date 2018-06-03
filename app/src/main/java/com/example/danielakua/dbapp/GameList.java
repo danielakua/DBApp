@@ -19,6 +19,7 @@ public class GameList extends AppCompatActivity {
     protected String tableName;
     protected String userName;
     protected TextView errorGamelist;
+    boolean isCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,21 +36,23 @@ public class GameList extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin") && userName.equals("admin");
-        boolean isUser = LoginPage.sharedPref.getString("username", "").equals(userName);
+        isCurrentUser = LoginPage.sharedPref.getString("username", "").equals(userName);
 
         ((Button) findViewById(R.id.scoreGamelist)).setText(String.format(getString(R.string.button_calculate_score), isAdmin ? "Calculate" : "Show"));
         findViewById(R.id.addGameGamelist).setVisibility(isAdmin ? View.VISIBLE : View.GONE);
         findViewById(R.id.addUserGamelist).setVisibility(isAdmin ? View.VISIBLE : View.GONE);
-        findViewById(R.id.scoreGamelist).setVisibility(isUser ? View.VISIBLE : View.GONE);
-        findViewById(R.id.submitGamelist).setVisibility(isUser ? View.VISIBLE : View.GONE);
+        findViewById(R.id.scoreGamelist).setVisibility(isCurrentUser ? View.VISIBLE : View.GONE);
+        findViewById(R.id.submitGamelist).setVisibility(isCurrentUser ? View.VISIBLE : View.GONE);
 
-        getAllMatches();
+       getAllMatches();
     }
 
     void getAllMatches(){
         ((TextView) findViewById(R.id.titleGamelist)).setText(tableName);
         errorGamelist.setText("");
-        PerformQuery query = new PerformQuery(this, "getAllInfo", new PerformQuery.AsyncResponse() {
+        //String method = EXTRA_NAME.equals("") ? "getAllInfo" : "getLockedInfo";
+        String method = isCurrentUser ? "getAllInfo" : "getLockedInfo";
+        PerformQuery query = new PerformQuery(this, method, new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 response = response.trim();

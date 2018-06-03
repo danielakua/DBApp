@@ -10,33 +10,17 @@
         android:id="@+id/titleMain"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/main_page"
         android:textAlignment="center"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/errorMain"
-        app:layout_constraintEnd_toStartOf="@+id/logoutLogin"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread" />
-
-    <Button
-        android:id="@+id/logoutLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/transparent"
-        android:onClick="LogoutClick"
-        android:text="@string/logout_page"
-        android:textAllCaps="false"
-        android:textColor="@android:color/holo_blue_light"
-        app:layout_constraintBottom_toBottomOf="@+id/titleMain"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/titleMain"
-        app:layout_constraintTop_toTopOf="@+id/titleMain" />
 
     <TextView
         android:id="@+id/errorMain"
@@ -105,6 +89,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/changePWMain" />
+
+        <Button
+            android:id="@+id/logoutLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:onClick="LogoutClick"
+            android:text="@string/logout_page"
+            android:textAllCaps="false"
+            android:textColor="@android:color/holo_blue_light"
+            app:layout_constraintBottom_toBottomOf="@+id/titleMain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/titleMain"
+            app:layout_constraintTop_toTopOf="@+id/titleMain"
+            app:layout_constraintVertical_bias="1.0" />
 
     </LinearLayout>
 
