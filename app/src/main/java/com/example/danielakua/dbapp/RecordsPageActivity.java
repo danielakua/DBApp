@@ -69,7 +69,7 @@ public class RecordsPageActivity extends AppCompatActivity implements AdapterVie
         Intent intent = new Intent(this, GameList.class);
         intent.putExtra(GameList.EXTRA_TABLE, tableName);
         intent.putExtra(GameList.EXTRA_NAME, records.get(position).get_name());
-        
+
         startActivity(intent);
     }
 }
