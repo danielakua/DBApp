@@ -50,7 +50,6 @@ public class GameList extends AppCompatActivity {
     void getAllMatches(){
         ((TextView) findViewById(R.id.titleGamelist)).setText(tableName);
         errorGamelist.setText("");
-        //String method = EXTRA_NAME.equals("") ? "getAllInfo" : "getLockedInfo";
         String method = isCurrentUser ? "getAllInfo" : "getLockedInfo";
         PerformQuery query = new PerformQuery(this, method, new PerformQuery.AsyncResponse() {
             @Override

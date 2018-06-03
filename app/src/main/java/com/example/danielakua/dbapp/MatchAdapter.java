@@ -11,9 +11,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-class MatchAdapter extends BaseAdapter
-{
-    public interface OnDataChangeListener{
+class MatchAdapter extends BaseAdapter {
+    public interface OnDataChangeListener {
         void onDataChanged(String response);
     }
 
@@ -26,30 +25,27 @@ class MatchAdapter extends BaseAdapter
     private final int defColor = -570425344;
     private final int defDisabled = android.R.color.secondary_text_dark;
 
-    MatchAdapter(Context context, ArrayList<String> items, ArrayList<String> bets, String table, String name, OnDataChangeListener listener) {
+    MatchAdapter(Context context, ArrayList<String> matches, ArrayList<String> bets, String table, String name, OnDataChangeListener listener) {
         mTable = table;
         mName = name;
-        mDataSource = items;
+        mDataSource = matches;
         mBets = bets;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.listener = listener;
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         return mDataSource.size();
     }
 
     @Override
-    public Object getItem(int position)
-    {
+    public Object getItem(int position) {
         return mDataSource.get(position);
     }
 
     @Override
-    public long getItemId(int position)
-    {
+    public long getItemId(int position) {
         return position;
     }
 
@@ -58,9 +54,12 @@ class MatchAdapter extends BaseAdapter
         View rowView;
         final boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
         final boolean isUser = LoginPage.sharedPref.getString("username", "").equals(mName);
+
         final String[] entry = ((String) getItem(position)).split(",");
         boolean enabled = Integer.parseInt(entry[5]) == 0;
+        int realScore = Integer.parseInt(entry[6]);
         rowView = mInflater.inflate(R.layout.game_row_view, parent, false);
+
         final TextView entryMatch = rowView.findViewById(R.id.entryMatch);
         final Button entryLock = rowView.findViewById(R.id.entryLock);
         final Button entryDelgame = rowView.findViewById(R.id.entryDelgame);
@@ -73,26 +72,47 @@ class MatchAdapter extends BaseAdapter
         entryTie.setText(entry[3]);
         entryRightWin.setText(entry[4]);
 
-        if(!isAdmin){
+        switch (realScore) {
+            case 0: {
+                break;
+            }
+            case 1: {
+                entryLeftWin.setBackgroundColor(Color.GREEN);
+                break;
+            }
+            case 2: {
+                entryTie.setBackgroundColor(Color.GREEN);
+                break;
+            }
+            case 3: {
+                entryRightWin.setBackgroundColor(Color.GREEN);
+                break;
+            }
+        }
+
+        if (!isAdmin) {
             entryLeftWin.setEnabled(enabled);
             entryTie.setEnabled(enabled);
             entryRightWin.setEnabled(enabled);
         }
 
-        if(!isUser){
+        if (!isUser) {
             entryLeftWin.setEnabled(false);
             entryTie.setEnabled(false);
             entryRightWin.setEnabled(false);
         }
 
         int bet = mBets.get(position).equals("null") ? 0 : Integer.parseInt(mBets.get(position));
-        switch(bet){
+        switch (bet) {
             case 1:
-                entryLeftWin.setTextColor(Color.RED); break;
+                entryLeftWin.setTextColor(Color.RED);
+                break;
             case 2:
-                entryTie.setTextColor(Color.RED); break;
+                entryTie.setTextColor(Color.RED);
+                break;
             case 3:
-                entryRightWin.setTextColor(Color.RED); break;
+                entryRightWin.setTextColor(Color.RED);
+                break;
             default:
                 mBets.set(position, "0");
         }
@@ -144,10 +164,9 @@ class MatchAdapter extends BaseAdapter
     }
 
     private void deleteMatch(String match) {
-        PerformQuery query = new PerformQuery(null, "delete", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(null, "delete", new PerformQuery.AsyncResponse() {
             @Override
-            public void processFinish(String response)
-            {
+            public void processFinish(String response) {
                 listener.onDataChanged(response);
             }
         });
@@ -155,10 +174,9 @@ class MatchAdapter extends BaseAdapter
     }
 
     private void updateLock(String[] entry) {
-        PerformQuery query = new PerformQuery(null, "update", new PerformQuery.AsyncResponse(){
+        PerformQuery query = new PerformQuery(null, "update", new PerformQuery.AsyncResponse() {
             @Override
-            public void processFinish(String response)
-            {
+            public void processFinish(String response) {
                 listener.onDataChanged(response);
             }
         });
