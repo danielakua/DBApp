@@ -1,6 +1,7 @@
 package com.example.danielakua.dbapp;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +19,9 @@ public class TablesList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tables_list);
+        ActionBar actionBar = getSupportActionBar();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//setHomeButtonEnabled(true);
     }
 
     @Override

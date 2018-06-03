@@ -85,6 +85,7 @@ public class CreateTable extends AppCompatActivity {
                 if(response.startsWith("created table")) {
                     addToMainTable();
                     addScoreColumn();
+
                 }
             }
         });

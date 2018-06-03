@@ -119,7 +119,7 @@ public class GameList extends AppCompatActivity {
         for(String user : users){
             if(user.split(" ")[1].equals("t")) {
                 columns.add(user.split(" ")[0]);
-                columns.add("int4");
+                columns.add("integer");
             }
         }
 

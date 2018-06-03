@@ -151,6 +151,15 @@ class UserAdapter extends BaseAdapter
             }
         });
         query.execute(username, "true");
+
+        query = new PerformQuery(null, "addUserToAllTables", new PerformQuery.AsyncResponse(){
+            @Override
+            public void processFinish(String response)
+            {
+                listener.onDataChanged(response);
+            }
+        });
+        query.execute(username, "true");
     }
 
     private void GoToUpdateInfo(String username)

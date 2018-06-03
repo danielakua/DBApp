@@ -123,6 +123,9 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             case "register":
                 response = performRegister(params);
                 break;
+            case "addUserToAllTables":
+                response = performAddUserToAllTables(params);
+                break;
             case "apply":
                 response = performApply(params);
                 break;
@@ -166,6 +169,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         }
         return response;
     }
+
 
     private String performGetRelevantTables(String... params) {
         StringBuilder response = new StringBuilder("");
@@ -618,6 +622,19 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             response = "server error";
         }
         return response;
+    }
+
+    private String performAddUserToAllTables(String[] params) {
+        String response;
+        String username = params[0];
+        String[] tables = performGetTables().split("\n");
+        for (String table : tables) {
+            if (!table.equals(UsersList.USERS_TABLE)) {
+                performAddColumn(table, username, "Integer");
+            }
+        }
+
+        return "OK";
     }
 
     private String getPassword(String username, String table) {

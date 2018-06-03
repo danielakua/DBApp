@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -17,18 +16,21 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LoginPage" />
         <activity android:name=".MainPageActivity" />
-        <activity android:name=".RecordsPageActivity" />
+        <activity android:name=".RecordsPageActivity" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
         <activity android:name=".RegisterPage" />
-        <activity android:name=".UsersList" />
-        <activity android:name=".SetDBPage" />
+        <activity android:name=".UsersList" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
+        <activity android:name=".SetDBPage" android:parentActivityName="com.example.danielakua.dbapp.AdminPage"/>
         <activity android:name=".UpdateInfo" />
-        <activity android:name=".AdminPage" />
+        <activity android:name=".AdminPage" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
         <activity android:name=".CreateTable" />
         <activity
             android:name=".AddToTable"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".TablesList" />
-        <activity android:name=".GameList" />
+        <activity
+            android:name=".TablesList"
+            android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
+
+        <activity android:name=".GameList" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity" />
         <activity android:name=".DBMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
