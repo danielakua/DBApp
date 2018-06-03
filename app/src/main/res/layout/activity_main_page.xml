@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:paddingTop="24dp"
         android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/gameMain"
@@ -35,42 +36,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleMain" />
 
-    <Button
-        android:id="@+id/gameMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="GameClick"
-        android:text="@string/button_game"
-        android:textAllCaps="false"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/linMain"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/errorMain" />
-
     <LinearLayout
         android:id="@+id/linMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="64dp"
         android:layout_marginStart="64dp"
+        android:layout_marginTop="40dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gameMain">
+        app:layout_constraintTop_toBottomOf="@+id/errorMain">
 
         <Button
-            android:id="@+id/changePWMain"
+            android:id="@+id/gameMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:onClick="UpdateInfoClick"
-            android:text="@string/change_pass"
+            android:onClick="GameClick"
+            android:text="@string/button_game"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@+id/linMain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/errorMain" />
+
+        <Button
+            android:id="@+id/Scores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:onClick="CalculateScoreClick"
+            android:text="@string/Rankings"
             android:textAllCaps="false"
             app:layout_constraintBottom_toTopOf="@+id/adminMain"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +89,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/changePWMain" />
+
+        <Button
+            android:id="@+id/changePWMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:onClick="UpdateInfoClick"
+            android:text="@string/change_pass"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@+id/adminMain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recordsMain" />
 
         <Button
             android:id="@+id/logoutLogin"

@@ -27,7 +27,12 @@ public class MainPageActivity extends AppCompatActivity {
 
 
     }
+    public void CalculateScoreClick(View view) {
+        final Intent intent = new Intent(this, RecordsPageActivity.class);
+        intent.putExtra(RecordsPageActivity.EXTRA_INFO, "alpha");
+        startActivity(intent);
 
+    }
     @Override
     public void onResume() {
         super.onResume();
