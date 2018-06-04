@@ -44,7 +44,12 @@ public class PerformQuery extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         if (dismiss) {
-            progressDialog.dismiss();
+            try {
+                progressDialog.dismiss();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         delegate.processFinish(result);
     }
@@ -308,6 +313,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         query.append(String.format(" FROM %s ORDER BY %s DESC", table, pkey));
         try {
             stmt = c.createStatement();
+
             ResultSet rs = stmt.executeQuery(query.toString());
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();

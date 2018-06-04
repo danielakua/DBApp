@@ -155,10 +155,21 @@ public class GameList extends AppCompatActivity {
             }
         });
         query.execute(paramsArr);
+
+        if (LoginPage.sharedPref.getString("username","").equals("admin")) {
+            PerformQuery query2 = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
+                @Override
+                public void processFinish(String response) {
+                    response = response.trim();
+                    ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
+                    calculateScore(users);      }
+            });
+            query2.execute(UsersList.USERS_TABLE);
+        }
     }
 
     public void CalculateScoreClick(View view) {
-        final Intent intent = new Intent(this, RecordsPageActivity.class);
+        final Intent intent = new Intent(GameList.this, RecordsPageActivity.class);
         intent.putExtra(RecordsPageActivity.EXTRA_INFO, tableName);
 
         if(!LoginPage.sharedPref.getString("username","").equals("admin")){
@@ -172,6 +183,7 @@ public class GameList extends AppCompatActivity {
                     ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
                     calculateScore(users);
                     errorGamelist.setText("");
+
                     startActivity(intent);
                 }
             });
@@ -203,9 +215,15 @@ public class GameList extends AppCompatActivity {
             for (int i = 0; i < matches.size(); i++) {
                 System.out.println(matches.get(i));
                 String[] line = matches.get(i).split(",");
+
                 if (line[5].equals("1") && line[6].equals(betCol[i].trim())) {
-                    sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1]);
+                    sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1])-1;
                 }
+
+                // If we decide to give
+//                else  if (line[5].equals("1") && !line[6].equals("null") && betCol[i].trim().equals("null")) {
+//                    sum+=0.5;
+//                }
             }
         }
         PerformQuery query = new PerformQuery(this, "updateScore", new PerformQuery.AsyncResponse() {

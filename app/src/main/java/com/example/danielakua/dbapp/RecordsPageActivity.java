@@ -55,6 +55,7 @@ public class RecordsPageActivity extends AppCompatActivity implements AdapterVie
                 Double o1I = o1.get_score();
                 Double o2I = o2.get_score();
                 return o1I > o2I ? -1 : o1I < o2I ? 1 : 0;
+
             }
         });
 

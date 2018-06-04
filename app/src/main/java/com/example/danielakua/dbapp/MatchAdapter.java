@@ -2,6 +2,7 @@ package com.example.danielakua.dbapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,21 +72,25 @@ class MatchAdapter extends BaseAdapter {
         entryLeftWin.setText(entry[2]);
         entryTie.setText(entry[3]);
         entryRightWin.setText(entry[4]);
+        int green = Color.parseColor("#98FB98");
 
         switch (realScore) {
             case 0: {
                 break;
             }
             case 1: {
-                entryLeftWin.setBackgroundColor(Color.GREEN);
+                entryLeftWin.setBackgroundColor(green);
+                entryLeftWin.setTypeface(null, Typeface.BOLD);
                 break;
             }
             case 2: {
-                entryTie.setBackgroundColor(Color.GREEN);
+                entryTie.setBackgroundColor(green);
+                entryTie.setTypeface(null, Typeface.BOLD);
                 break;
             }
             case 3: {
-                entryRightWin.setBackgroundColor(Color.GREEN);
+                entryRightWin.setBackgroundColor(green);
+                entryRightWin.setTypeface(null, Typeface.BOLD);
                 break;
             }
         }
