@@ -58,5 +58,6 @@
     <string name="column">Column</string>
     <string name="Scores">Scores</string>
     <string name="Rankings">Rankings</string>
+    <string name="vs">vs</string>
 
 </resources>

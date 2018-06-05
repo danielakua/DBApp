@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical|center_horizontal">
 
         <TextView
-            android:id="@+id/entryMatch"
+            android:id="@+id/dateTime"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/entryLock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
     </TableRow>
 
@@ -26,10 +21,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/homeTeam"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom|center_horizontal"
+            android:textAlignment="gravity"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/vs"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom|center_horizontal"
+            android:text="@string/vs"
+            android:textAlignment="gravity"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/awayTeam"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom|center_horizontal"
+            android:textAlignment="gravity"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/entryLock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
         <Button
             android:id="@+id/entryLeftWin"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textAllCaps="false" />
@@ -52,8 +87,9 @@
 
         <Button
             android:id="@+id/entryDelgame"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/button_delete"
             android:textAllCaps="false" />
     </TableRow>

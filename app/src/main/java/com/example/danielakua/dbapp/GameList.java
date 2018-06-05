@@ -216,8 +216,8 @@ public class GameList extends AppCompatActivity {
                 System.out.println(matches.get(i));
                 String[] line = matches.get(i).split(",");
 
-                if (line[5].equals("1") && line[6].equals(betCol[i].trim())) {
-                    sum += Double.parseDouble(line[Integer.parseInt(line[6]) + 1])-1;
+                if (line[Globals.LOCKED_COLUMN_INDEX].equals("1") && line[Globals.REAL_SCORE_COLUMN_INDEX].equals(betCol[i].trim())) {
+                    sum += Double.parseDouble(line[Integer.parseInt(line[Globals.REAL_SCORE_COLUMN_INDEX]) + 1])-1;
                 }
 
                 // If we decide to give

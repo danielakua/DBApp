@@ -20,6 +20,7 @@ import java.util.List;
 
 public class MainPageActivity extends AppCompatActivity {
 
+
     protected String name;// username
     private Spinner spinner;
     protected ArrayList<String> tables;

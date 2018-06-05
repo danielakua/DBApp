@@ -10,9 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 class MatchAdapter extends BaseAdapter {
+
     public interface OnDataChangeListener {
         void onDataChanged(String response);
     }
@@ -57,21 +61,36 @@ class MatchAdapter extends BaseAdapter {
         final boolean isUser = LoginPage.sharedPref.getString("username", "").equals(mName);
 
         final String[] entry = ((String) getItem(position)).split(",");
-        boolean enabled = Integer.parseInt(entry[5]) == 0;
-        int realScore = Integer.parseInt(entry[6]);
+        boolean enabled = Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0;
+        int realScore = Integer.parseInt(entry[Globals.REAL_SCORE_COLUMN_INDEX]);
         rowView = mInflater.inflate(R.layout.game_row_view, parent, false);
 
-        final TextView entryMatch = rowView.findViewById(R.id.entryMatch);
+        final TextView dateTime = rowView.findViewById(R.id.dateTime);
+        final TextView homeTeam = rowView.findViewById(R.id.homeTeam);
+        final TextView awayTeam= rowView.findViewById(R.id.awayTeam);
         final Button entryLock = rowView.findViewById(R.id.entryLock);
         final Button entryDelgame = rowView.findViewById(R.id.entryDelgame);
         final Button entryLeftWin = rowView.findViewById(R.id.entryLeftWin);
         final Button entryTie = rowView.findViewById(R.id.entryTie);
         final Button entryRightWin = rowView.findViewById(R.id.entryRightWin);
 
-        entryMatch.setText(entry[1]);
-        entryLeftWin.setText(entry[2]);
-        entryTie.setText(entry[3]);
-        entryRightWin.setText(entry[4]);
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        Date date = null;
+        try {
+            date = dt.parse(entry[Globals.DATE_COLUMN_INDEX].substring(0,entry[Globals.DATE_COLUMN_INDEX].indexOf(".")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        dateTime.setText(dt.format(date));
+        homeTeam.setText(entry[Globals.HOME_TEAM_COLUMN_INDEX]);
+        entryLeftWin.setText(entry[Globals.HOME_TEAM_WIN_RATE_COLUMN_INDEX]);
+
+        awayTeam.setText(entry[Globals.AWAY_TEAM_COLUMN_INDEX]);
+        entryRightWin.setText(entry[Globals.AWAY_TEAM_WIN_RATE_COLUMN_INDEX]);
+
+        entryTie.setText(entry[Globals.TIE_RATE_COLUMN_INDEX]);
+
         int green = Color.parseColor("#98FB98");
 
         switch (realScore) {
@@ -80,17 +99,17 @@ class MatchAdapter extends BaseAdapter {
             }
             case 1: {
                 entryLeftWin.setBackgroundColor(green);
-                entryLeftWin.setTypeface(null, Typeface.BOLD);
+               // entryLeftWin.setTypeface(null, Typeface.BOLD);
                 break;
             }
             case 2: {
                 entryTie.setBackgroundColor(green);
-                entryTie.setTypeface(null, Typeface.BOLD);
+              //  entryTie.setTypeface(null, Typeface.BOLD);
                 break;
             }
             case 3: {
                 entryRightWin.setBackgroundColor(green);
-                entryRightWin.setTypeface(null, Typeface.BOLD);
+               // entryRightWin.setTypeface(null, Typeface.BOLD);
                 break;
             }
         }
@@ -123,11 +142,11 @@ class MatchAdapter extends BaseAdapter {
         }
 
         entryLock.setVisibility(isAdmin && isUser ? View.VISIBLE : View.GONE);
-        entryLock.setText(Integer.parseInt(entry[5]) == 0 ? "Lock" : "Unlock");
+        entryLock.setText(Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "Lock" : "Unlock");
         entryLock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                entry[5] = Integer.parseInt(entry[5]) == 0 ? "1" : "0";
-                entryLock.setText(Integer.parseInt(entry[5]) == 0 ? "Lock" : "Unlock");
+                entry[Globals.LOCKED_COLUMN_INDEX] = Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "1" : "0";
+                entryLock.setText(Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "Lock" : "Unlock");
                 updateLock(entry);
             }
         });
@@ -185,6 +204,6 @@ class MatchAdapter extends BaseAdapter {
                 listener.onDataChanged(response);
             }
         });
-        query.execute(mTable, entry[0], "locked", entry[5]);
+        query.execute(mTable, entry[0], "locked", entry[Globals.LOCKED_COLUMN_INDEX]);
     }
 }
