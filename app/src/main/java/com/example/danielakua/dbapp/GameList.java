@@ -8,8 +8,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class GameList extends AppCompatActivity {
 
@@ -134,12 +137,38 @@ public class GameList extends AppCompatActivity {
     }
 
     public void SubmitClick(View view) {
+
+        if (LoginPage.sharedPref.getString("username", "").equals("admin")){
+            PerformQuery query2 = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
+                @Override
+                public void processFinish(String response) {
+                    response = response.trim();
+                    ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
+                    calculateScore(users);
+                }
+            });
+            query2.execute(UsersList.USERS_TABLE);
+        }
+
+
         ArrayList<String> params = new ArrayList<>();
         params.add(tableName);
         params.add(LoginPage.sharedPref.getString("username", ""));
-        for (int i = 0; i < bets.size(); i++) {
-            params.add(matches.get(i).split(",")[0]);
-            params.add(bets.get(i));
+
+        if (LoginPage.sharedPref.getString("username", "").equals("admin")) {
+            for (int i = 0; i < bets.size(); i++) {
+                params.add(matches.get(i).split(",")[0]);
+                params.add(bets.get(i));
+            }
+        } else {
+            for (int i = 0; i < bets.size(); i++) {
+                if (matches.get(i).split(",")[Globals.LOCKED_COLUMN_INDEX].equals("0")) {
+                    if(!shouldBeLocked(matches.get(i).split(",")[0], matches.get(i).split(",")[Globals.DATE_COLUMN_INDEX])){
+                    params.add(matches.get(i).split(",")[0]);
+                    params.add(bets.get(i));
+                    }
+                }
+            }
         }
 
         String[] paramsArr = new String[params.size()];
@@ -154,17 +183,25 @@ public class GameList extends AppCompatActivity {
         });
         query.execute(paramsArr);
 
-        if (LoginPage.sharedPref.getString("username", "").equals("admin")) {
-            PerformQuery query2 = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
-                @Override
-                public void processFinish(String response) {
-                    response = response.trim();
-                    ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
-                    calculateScore(users);
-                }
-            });
-            query2.execute(UsersList.USERS_TABLE);
+
+
+
+    }
+
+    private boolean shouldBeLocked(String id, String dateString) {
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date = null;
+        try {
+            date = dt.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        Date now = new Date(System.currentTimeMillis() + (1000 * 60 * 5));
+        System.out.println(date.compareTo(now));
+        if (date.compareTo(now) < 0) {
+            return true;
+        }
+        return false;
     }
 
     public void CalculateScoreClick(View view) {
@@ -200,7 +237,7 @@ public class GameList extends AppCompatActivity {
             }
         });
         query1.execute(tableName);
-        }
+    }
 
     private void calcAll(String response, ArrayList<String> users) {
         String[] rows = response.split("\n");
