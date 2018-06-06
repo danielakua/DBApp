@@ -2,7 +2,6 @@ package com.example.danielakua.dbapp;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ class MatchAdapter extends BaseAdapter {
     private String mTable;
     private final int defColor = -570425344;
     private final int defDisabled = android.R.color.secondary_text_dark;
-
+    Button entryLock;
     MatchAdapter(Context context, ArrayList<String> matches, ArrayList<String> bets, String table, String name, OnDataChangeListener listener) {
         mTable = table;
         mName = name;
@@ -67,19 +66,25 @@ class MatchAdapter extends BaseAdapter {
 
         final TextView dateTime = rowView.findViewById(R.id.dateTime);
         final TextView homeTeam = rowView.findViewById(R.id.homeTeam);
-        final TextView awayTeam= rowView.findViewById(R.id.awayTeam);
-        final Button entryLock = rowView.findViewById(R.id.entryLock);
+        final TextView awayTeam = rowView.findViewById(R.id.awayTeam);
+        entryLock = rowView.findViewById(R.id.entryLock);
         final Button entryDelgame = rowView.findViewById(R.id.entryDelgame);
         final Button entryLeftWin = rowView.findViewById(R.id.entryLeftWin);
         final Button entryTie = rowView.findViewById(R.id.entryTie);
         final Button entryRightWin = rowView.findViewById(R.id.entryRightWin);
 
-        SimpleDateFormat dt = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date date = null;
         try {
-            date = dt.parse(entry[Globals.DATE_COLUMN_INDEX].substring(0,entry[Globals.DATE_COLUMN_INDEX].indexOf(".")));
+            date = dt.parse(entry[Globals.DATE_COLUMN_INDEX].substring(0, entry[Globals.DATE_COLUMN_INDEX].indexOf(".")));
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+
+        if (entry[Globals.LOCKED_COLUMN_INDEX].equals("0")) {
+            if (shouldBeLocked(date, entry[0])){
+                entry[Globals.LOCKED_COLUMN_INDEX]="1";
+            };
         }
 
         dateTime.setText(dt.format(date));
@@ -99,17 +104,17 @@ class MatchAdapter extends BaseAdapter {
             }
             case 1: {
                 entryLeftWin.setBackgroundColor(green);
-               // entryLeftWin.setTypeface(null, Typeface.BOLD);
+                // entryLeftWin.setTypeface(null, Typeface.BOLD);
                 break;
             }
             case 2: {
                 entryTie.setBackgroundColor(green);
-              //  entryTie.setTypeface(null, Typeface.BOLD);
+                //  entryTie.setTypeface(null, Typeface.BOLD);
                 break;
             }
             case 3: {
                 entryRightWin.setBackgroundColor(green);
-               // entryRightWin.setTypeface(null, Typeface.BOLD);
+                // entryRightWin.setTypeface(null, Typeface.BOLD);
                 break;
             }
         }
@@ -146,8 +151,9 @@ class MatchAdapter extends BaseAdapter {
         entryLock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 entry[Globals.LOCKED_COLUMN_INDEX] = Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "1" : "0";
-                entryLock.setText(Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "Lock" : "Unlock");
-                updateLock(entry);
+                final String lockNewState = entry[Globals.LOCKED_COLUMN_INDEX];
+                final String id = entry[0];
+                updateLock(id ,lockNewState);
             }
         });
         entryDelgame.setVisibility(isAdmin && isUser ? View.VISIBLE : View.GONE);
@@ -187,6 +193,26 @@ class MatchAdapter extends BaseAdapter {
         return rowView;
     }
 
+    private boolean shouldBeLocked(Date date, String gameId) {
+        Date now = new Date(System.currentTimeMillis() + (1000 * 60 * 5));
+        System.out.println(date.compareTo(now));
+        if (date.compareTo(now) < 0) {
+            lockGame(gameId);
+            return true;
+        }
+        return false;
+    }
+
+    private void lockGame(String gameId) {
+        PerformQuery query = new PerformQuery(null, "update", new PerformQuery.AsyncResponse() {
+            @Override
+            public void processFinish(String response) {
+                listener.onDataChanged(response);
+            }
+        });
+        query.execute(mTable, gameId, "locked","1");
+    }
+
     private void deleteMatch(String match) {
         PerformQuery query = new PerformQuery(null, "delete", new PerformQuery.AsyncResponse() {
             @Override
@@ -197,13 +223,14 @@ class MatchAdapter extends BaseAdapter {
         query.execute(match, mTable);
     }
 
-    private void updateLock(String[] entry) {
+    private void updateLock(String id, final String lockNewState) {
         PerformQuery query = new PerformQuery(null, "update", new PerformQuery.AsyncResponse() {
             @Override
             public void processFinish(String response) {
                 listener.onDataChanged(response);
+                entryLock.setText(Integer.parseInt(lockNewState) == 0 ? "Lock" : "Unlock");
             }
         });
-        query.execute(mTable, entry[0], "locked", entry[Globals.LOCKED_COLUMN_INDEX]);
+        query.execute(mTable, id, "locked", lockNewState);
     }
 }
