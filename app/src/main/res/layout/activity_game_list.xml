@@ -101,4 +101,16 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/addUserGamelist"
         app:layout_constraintTop_toTopOf="@+id/addUserGamelist" />
+
+    <Switch
+        android:id="@+id/finishedSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="8dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="All Games"
+        app:layout_constraintEnd_toStartOf="@+id/titleGamelist"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

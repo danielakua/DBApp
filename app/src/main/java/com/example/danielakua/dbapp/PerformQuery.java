@@ -104,6 +104,10 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             case "addColumns":
                 response = performAddColumns(params);
                 break;
+            case "performGetColumnIndexForUser":
+                response = performGetColumnIndexForUser(params);
+                break;
+
             case "updateColumn":
                 response = performUpdateColumn(params);
                 break;
@@ -289,6 +293,31 @@ public class PerformQuery extends AsyncTask<String, String, String> {
                 String name = rs.getString("column_name");
                 String type = rs.getString("data_type");
                 response.append(String.format("%s %s%n", name, type));
+            }
+            rs.close();
+            System.out.println(response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.append("server error");
+        }
+        return response.toString();
+    }
+
+    private String performGetColumnIndexForUser(String... params) {
+        StringBuilder response = new StringBuilder("");
+        String table = params[0];
+        String user = params[1];
+        try {
+            String query = String.format("SELECT column_name FROM information_schema.columns WHERE table_name='%s';", table);
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            int index = 0;
+            while (rs.next()) {
+                String name = rs.getString("column_name");
+                if (name.equals(user)) {
+                    response.append(String.format("%s", index));
+                }
+                index++;
             }
             rs.close();
             System.out.println(response.toString());

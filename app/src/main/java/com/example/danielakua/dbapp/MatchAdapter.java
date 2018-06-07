@@ -73,7 +73,7 @@ class MatchAdapter extends BaseAdapter {
         final Button entryTie = rowView.findViewById(R.id.entryTie);
         final Button entryRightWin = rowView.findViewById(R.id.entryRightWin);
 
-        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
         try {
             date = dt.parse(entry[Globals.DATE_COLUMN_INDEX].substring(0, entry[Globals.DATE_COLUMN_INDEX].indexOf(".")));
@@ -148,12 +148,14 @@ class MatchAdapter extends BaseAdapter {
 
         entryLock.setVisibility(isAdmin && isUser ? View.VISIBLE : View.GONE);
         entryLock.setText(Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "Lock" : "Unlock");
+
         entryLock.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 entry[Globals.LOCKED_COLUMN_INDEX] = Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "1" : "0";
                 final String lockNewState = entry[Globals.LOCKED_COLUMN_INDEX];
                 final String id = entry[0];
                 updateLock(id ,lockNewState);
+
             }
         });
         entryDelgame.setVisibility(isAdmin && isUser ? View.VISIBLE : View.GONE);

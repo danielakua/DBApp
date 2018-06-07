@@ -24,7 +24,7 @@ public class LoginPage extends AppCompatActivity {
 
         if(!sharedPref.contains("adminuser")){
             sharedPref.edit().putString("adminuser", "admin")
-                             .putString("adminpass", "admin").apply();
+                             .putString("adminpass", "a").apply();
         }
 
         errorLogin = findViewById(R.id.errorLogin);
