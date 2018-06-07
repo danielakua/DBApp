@@ -267,6 +267,7 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         String pkey = getPrimaryKey(table);
         StringBuilder query = new StringBuilder(String.format("UPDATE %s SET %s = CASE %s ", table, col, pkey));
         for (int i = 2; i < params.length; i++) {
+
             query.append(String.format("WHEN '%s' THEN %s ", params[i++], params[i]));
         }
         query.append("END");

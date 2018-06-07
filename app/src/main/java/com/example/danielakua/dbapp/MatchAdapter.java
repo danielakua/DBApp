@@ -29,6 +29,7 @@ class MatchAdapter extends BaseAdapter {
     private final int defColor = -570425344;
     private final int defDisabled = android.R.color.secondary_text_dark;
     Button entryLock;
+
     MatchAdapter(Context context, ArrayList<String> matches, ArrayList<String> bets, String table, String name, OnDataChangeListener listener) {
         mTable = table;
         mName = name;
@@ -61,7 +62,13 @@ class MatchAdapter extends BaseAdapter {
 
         final String[] entry = ((String) getItem(position)).split(",");
         boolean enabled = Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0;
-        int realScore = Integer.parseInt(entry[Globals.REAL_SCORE_COLUMN_INDEX]);
+        int realScore;
+        try {
+            realScore = Integer.parseInt(entry[Globals.REAL_SCORE_COLUMN_INDEX]);
+        } catch (Exception e) {
+            e.printStackTrace();
+            realScore = 0;
+        }
         rowView = mInflater.inflate(R.layout.game_row_view, parent, false);
 
         final TextView dateTime = rowView.findViewById(R.id.dateTime);
@@ -82,9 +89,10 @@ class MatchAdapter extends BaseAdapter {
         }
 
         if (entry[Globals.LOCKED_COLUMN_INDEX].equals("0")) {
-            if (shouldBeLocked(date, entry[0])){
-                entry[Globals.LOCKED_COLUMN_INDEX]="1";
-            };
+            if (shouldBeLocked(date, entry[0])) {
+                entry[Globals.LOCKED_COLUMN_INDEX] = "1";
+            }
+            ;
         }
 
         dateTime.setText(dt.format(date));
@@ -154,7 +162,7 @@ class MatchAdapter extends BaseAdapter {
                 entry[Globals.LOCKED_COLUMN_INDEX] = Integer.parseInt(entry[Globals.LOCKED_COLUMN_INDEX]) == 0 ? "1" : "0";
                 final String lockNewState = entry[Globals.LOCKED_COLUMN_INDEX];
                 final String id = entry[0];
-                updateLock(id ,lockNewState);
+                updateLock(id, lockNewState);
 
             }
         });
@@ -212,7 +220,7 @@ class MatchAdapter extends BaseAdapter {
                 listener.onDataChanged(response);
             }
         });
-        query.execute(mTable, gameId, "locked","1");
+        query.execute(mTable, gameId, "locked", "1");
     }
 
     private void deleteMatch(String match) {
