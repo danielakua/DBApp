@@ -25,6 +25,7 @@ public class GameList extends AppCompatActivity {
     static final String EXTRA_TABLE = "EXTRA_INFO_TABLE_NAME";
     static final String EXTRA_NAME = "EXTRA_INFO_USER_NAME";
     private ArrayList<String> matches, bets;
+    protected ArrayList<String> presentedBets;
     protected String tableName;
     protected String userName;
     protected TextView errorGamelist;
@@ -45,8 +46,8 @@ public class GameList extends AppCompatActivity {
 
         errorGamelist = findViewById(R.id.errorGamelist);
         simpleSwitch = findViewById(R.id.finishedSwitch);
-        gamesToPresent = "open";
-        simpleSwitch.setChecked(false);
+        gamesToPresent = "all";
+        simpleSwitch.setChecked(true);
 
         simpleSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +59,7 @@ public class GameList extends AppCompatActivity {
                     gamesToPresent = "open";
                     simpleSwitch.setChecked(false);
                 }
-                getAllMatches(gamesToPresent);
+                getAllMatches();
             }
         });
 
@@ -77,10 +78,10 @@ public class GameList extends AppCompatActivity {
         findViewById(R.id.scoreGamelist).setVisibility(isCurrentUser ? View.VISIBLE : View.GONE);
         findViewById(R.id.submitGamelist).setVisibility(isCurrentUser ? View.VISIBLE : View.GONE);
 
-        getAllMatches(gamesToPresent);
+        getAllMatches();
     }
 
-    void getAllMatches(String gamesToPresent) {
+    void getAllMatches() {
         ((TextView) findViewById(R.id.titleGamelist)).setText(tableName);
         errorGamelist.setText("");
         String method = isCurrentUser ? "getAllInfo" : "getLockedInfo";
@@ -118,8 +119,7 @@ public class GameList extends AppCompatActivity {
             ListView listView = findViewById(R.id.gameGamelist);
             presentedMatches = getGamesToPresent();
             sortMatchesByTime(presentedMatches);
-            ArrayList<String> presentedBets = getBetsToPresent(presentedMatches);
-            bets = presentedBets;
+            presentedBets = getBetsToPresent(presentedMatches);
             MatchAdapter adapter = new MatchAdapter(this, presentedMatches, presentedBets, tableName, userName, new MatchAdapter.OnDataChangeListener() {
                 @Override
                 public void onDataChanged(String response) {
@@ -222,17 +222,20 @@ public class GameList extends AppCompatActivity {
         params.add(LoginPage.sharedPref.getString("username", ""));
 
         if (LoginPage.sharedPref.getString("username", "").equals("admin")) {
-            for (int i = 0; i < bets.size(); i++) {
+            for (int i = 0; i < presentedMatches.size(); i++) {
                 params.add(presentedMatches.get(i).split(",")[0]);
-                params.add(bets.get(i));
+                params.add(presentedMatches.get(i).split(",")[Integer.parseInt(userIndex)]);
             }
         } else {
-            for (int i = 0; i < bets.size(); i++) {
+            for (int i = 0; i < presentedMatches.size(); i++) {
                 if (presentedMatches.get(i).split(",")[Globals.LOCKED_COLUMN_INDEX].equals("0")) {
                     if (!shouldBeLocked(presentedMatches.get(i).split(",")[Globals.DATE_COLUMN_INDEX])) {
                         params.add(presentedMatches.get(i).split(",")[0]);
-                        params.add(bets.get(i));
+                        params.add(presentedBets.get(i));
                     }
+                }else{
+                    params.add(presentedMatches.get(i).split(",")[0]);
+                    params.add(presentedMatches.get(i).split(",")[Integer.parseInt(userIndex)]);
                 }
             }
         }
@@ -250,10 +253,6 @@ public class GameList extends AppCompatActivity {
         }
         String[] paramsArr = new String[params.size()];
         paramsArr = params.toArray(paramsArr);
-
-        for (int i = 0; i < bets.size(); i++) {
-
-        }
 
         PerformQuery query = new PerformQuery(this, "updateColumn", new PerformQuery.AsyncResponse() {
             @Override
