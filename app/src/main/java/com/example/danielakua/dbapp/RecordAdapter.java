@@ -45,7 +45,7 @@ class RecordAdapter extends BaseAdapter
         Record entry = (Record) getItem(position);
         TextView entryName = rowView.findViewById(R.id.entryName);
         TextView entryScore = rowView.findViewById(R.id.entryScore);
-        entryName.setText(entry.get_name());
+        entryName.setText(entry.get_name().substring(0, 1).toUpperCase() + entry.get_name().substring(1));
         entryScore.setText(String.format("%.2f", entry.get_score()));
 
         return rowView;

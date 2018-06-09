@@ -11,10 +11,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-class UserAdapter extends BaseAdapter
-{
-    public interface OnDataChangeListener{
+class UserAdapter extends BaseAdapter {
+    public interface OnDataChangeListener {
         void onDataChanged(String response);
     }
 
@@ -32,20 +32,17 @@ class UserAdapter extends BaseAdapter
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         return mDataSource.size();
     }
 
     @Override
-    public Object getItem(int position)
-    {
+    public Object getItem(int position) {
         return mDataSource.get(position);
     }
 
     @Override
-    public long getItemId(int position)
-    {
+    public long getItemId(int position) {
         return position;
     }
 
@@ -53,12 +50,9 @@ class UserAdapter extends BaseAdapter
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView;
         context = parent.getContext();
-        if(mTable.equals(UsersList.USERS_TABLE))
-        {
+        if (mTable.equals(UsersList.USERS_TABLE)) {
             rowView = SpecialCase(position, parent);
-        }
-        else
-        {
+        } else {
             String entry = (String) getItem(position);
             rowView = mInflater.inflate(R.layout.simple_user_view, parent, false);
             final TextView entryUser = rowView.findViewById(R.id.entryUser);
@@ -66,7 +60,7 @@ class UserAdapter extends BaseAdapter
             final Button entryDelete = rowView.findViewById(R.id.entryDelete);
             entryUser.setText(entry);
             entryDelete.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
+                public void onClick(View v) {
                     deleteUser((String) entryUser.getText(), mTable);
                 }
             });
@@ -75,12 +69,12 @@ class UserAdapter extends BaseAdapter
         return rowView;
     }
 
-    private View SpecialCase(int position, ViewGroup parent){
+    private View SpecialCase(int position, ViewGroup parent) {
         String entry = (String) getItem(position);
         String name = entry.split(" ")[0];
         Boolean approved = entry.split(" ")[1].equals("t");
         View rowView;
-        if(approved) {
+        if (approved) {
             rowView = mInflater.inflate(R.layout.simple_user_view, parent, false);
             final TextView entryUser = rowView.findViewById(R.id.entryUser);
             final Button entryPW = rowView.findViewById(R.id.entryPW);
@@ -96,8 +90,7 @@ class UserAdapter extends BaseAdapter
                     GoToUpdateInfo(entryUser.getText().toString());
                 }
             });
-        }
-        else {
+        } else {
             rowView = mInflater.inflate(R.layout.simple_application_view, parent, false);
             final TextView entryUser = rowView.findViewById(R.id.entryUser);
             final Button entryApprove = rowView.findViewById(R.id.entryApprove);
@@ -117,53 +110,78 @@ class UserAdapter extends BaseAdapter
         return rowView;
     }
 
-    private void deleteUser(String username, final String table)
-    {
-        PerformQuery query = new PerformQuery(null, "delete", new PerformQuery.AsyncResponse(){
+    private void deleteUser(final String username, final String table) {
+        PerformQuery query = new PerformQuery(null, "delete", new PerformQuery.AsyncResponse() {
             @Override
-            public void processFinish(String response)
-            {
+            public void processFinish(String response) {
                 listener.onDataChanged(response);
+                deleteFromGamesTables(username);
             }
         });
         query.execute(username, table);
     }
 
-    private void rejectUser(String username)
-    {
-        PerformQuery query = new PerformQuery(null, "register", new PerformQuery.AsyncResponse(){
+    private void deleteFromGamesTables(final String username) {
+        PerformQuery query = new PerformQuery(null, "getTables", new PerformQuery.AsyncResponse() {
             @Override
-            public void processFinish(String response)
-            {
+            public void processFinish(String response) {
+                response = response.trim();
+                ArrayList<String> tables = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split("\n")));
+                tables.remove("main_table");
+                try {
+                    tables.remove("users");
+                } catch (Exception e) {
+                    System.out.println("no users table");
+                }
+                for (String table : tables) {
+                    deleteUserFromTable(table, username);
+                }
+            }
+        });
+        query.execute("admin");
+
+    }
+
+    private void deleteUserFromTable(String table, String username) {
+        PerformQuery query = new PerformQuery(null, "performDeleteColumn", new PerformQuery.AsyncResponse() {
+            @Override
+            public void processFinish(String response) {
+                listener.onDataChanged(response);
+
+            }
+        });
+        query.execute(table, username);
+    }
+
+    private void rejectUser(String username) {
+        PerformQuery query = new PerformQuery(null, "register", new PerformQuery.AsyncResponse() {
+            @Override
+            public void processFinish(String response) {
                 listener.onDataChanged(response);
             }
         });
         query.execute(username, "false");
     }
 
-    private void approveUser(String username)
-    {
-        PerformQuery query = new PerformQuery(null, "register", new PerformQuery.AsyncResponse(){
+    private void approveUser(String username) {
+        PerformQuery query = new PerformQuery(null, "register", new PerformQuery.AsyncResponse() {
             @Override
-            public void processFinish(String response)
-            {
+            public void processFinish(String response) {
                 listener.onDataChanged(response);
             }
         });
         query.execute(username, "true");
 
-        query = new PerformQuery(null, "addUserToAllTables", new PerformQuery.AsyncResponse(){
+        query = new PerformQuery(null, "addUserToAllTables", new PerformQuery.AsyncResponse() {
             @Override
-            public void processFinish(String response)
-            {
+            public void processFinish(String response) {
                 listener.onDataChanged(response);
             }
         });
         query.execute(username, "true");
     }
 
-    private void GoToUpdateInfo(String username)
-    {
+    private void GoToUpdateInfo(String username) {
         Intent intent = new Intent(context, UpdateInfo.class);
         intent.putExtra(UpdateInfo.EXTRA_INFO, username);
         context.startActivity(intent);

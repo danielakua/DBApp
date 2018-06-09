@@ -107,7 +107,6 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             case "performGetColumnIndexForUser":
                 response = performGetColumnIndexForUser(params);
                 break;
-
             case "updateColumn":
                 response = performUpdateColumn(params);
                 break;
@@ -125,6 +124,9 @@ public class PerformQuery extends AsyncTask<String, String, String> {
                 break;
             case "delete":
                 response = performDelete(params);
+                break;
+            case "performDeleteColumn":
+                response = performDeleteColumn(params);
                 break;
             case "login":
                 response = performLogin(params);
@@ -159,7 +161,9 @@ public class PerformQuery extends AsyncTask<String, String, String> {
             case "getAllUsers":
                 response = performKeysFromTable(params);
                 break;
-
+            case "performGetUsersFromTable":
+                response = performGetUsersFromTable(params);
+                break;
             default:
                 System.out.println("NO SUCH METHOD TO PERFORM");
                 response = "";
@@ -511,6 +515,21 @@ public class PerformQuery extends AsyncTask<String, String, String> {
         return response;
     }
 
+    private String performDeleteColumn(String... params) {
+        String response;
+        String table = params[0];
+        String column = params[1];
+        try {
+            String query = String.format("ALTER TABLE %s DROP %s;", table, column);
+            stmt = c.createStatement();
+            stmt.executeUpdate(query);
+            response = "column "+column+" deleted";
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = "server error";
+        }
+        return response;
+    }
     private String performApply(String... params) {
         String response;
         String username = params[0];
@@ -704,13 +723,38 @@ public class PerformQuery extends AsyncTask<String, String, String> {
                     response.append(String.format("%s %s", rs.getString(pkey.trim()), rs.getString("approved")));
                 } else {
                     response.append(rs.getString(pkey));
+        }
+    }
+            rs.close();
+} catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response.toString();
+    }
+    private String performGetUsersFromTable(String... params) {
+        StringBuilder response = new StringBuilder("");
+        String delim = "";
+        String table = params[0];
+        String pkey = getPrimaryKey(table);
+        String query = String.format("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '%s'", table);
+        try {
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                response.append(delim);
+                delim = ",";
+                if (table.equals(UsersList.USERS_TABLE)) {
+                    response.append(String.format("%s %s", rs.getString(pkey.trim()), rs.getString("approved")));
+                } else {
+                    response.append(rs.getString("column_name"));
                 }
             }
             rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return response.toString();
+        String users = response.toString();
+        return users.split("dateofmatch,")[1];
     }
 
     private String performAllFromTable(String... params) {

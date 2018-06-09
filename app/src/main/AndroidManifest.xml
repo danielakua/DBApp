@@ -20,8 +20,8 @@
         <activity android:name=".UpdateInfo" />
         <activity android:name=".MainPageActivity" />
 
-        <activity android:name=".RecordsPageActivity" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
-        <activity android:name=".UsersList" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
+        <activity android:name=".RecordsPageActivity"/>
+        <activity android:name=".UsersList"/>
         <activity android:name=".SetDBPage" android:parentActivityName="com.example.danielakua.dbapp.AdminPage"/>
         <activity android:name=".AdminPage" android:parentActivityName="com.example.danielakua.dbapp.MainPageActivity"/>
 

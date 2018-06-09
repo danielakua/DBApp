@@ -221,24 +221,11 @@ public class GameList extends AppCompatActivity {
         params.add(tableName);
         params.add(LoginPage.sharedPref.getString("username", ""));
 
-        if (LoginPage.sharedPref.getString("username", "").equals("admin")) {
-            for (int i = 0; i < presentedMatches.size(); i++) {
-                params.add(presentedMatches.get(i).split(",")[0]);
-                params.add(presentedMatches.get(i).split(",")[Integer.parseInt(userIndex)]);
-            }
-        } else {
-            for (int i = 0; i < presentedMatches.size(); i++) {
-                if (presentedMatches.get(i).split(",")[Globals.LOCKED_COLUMN_INDEX].equals("0")) {
-                    if (!shouldBeLocked(presentedMatches.get(i).split(",")[Globals.DATE_COLUMN_INDEX])) {
-                        params.add(presentedMatches.get(i).split(",")[0]);
-                        params.add(presentedBets.get(i));
-                    }
-                }else{
-                    params.add(presentedMatches.get(i).split(",")[0]);
-                    params.add(presentedMatches.get(i).split(",")[Integer.parseInt(userIndex)]);
-                }
-            }
+        for (int i = 0; i < presentedMatches.size(); i++) {
+            params.add(presentedMatches.get(i).split(",")[0]);
+            params.add(presentedBets.get(i));
         }
+
         for (int i = 0; i < matches.size(); i++) {
             boolean found = false;
             for (int j = 0; j < presentedMatches.size(); j++) {
@@ -259,11 +246,28 @@ public class GameList extends AppCompatActivity {
             public void processFinish(String response) {
                 response = response.trim();
                 errorGamelist.setText(response);
+                if (LoginPage.sharedPref.getString("username", "").equals("admin")) {
+                    calc();
+                }
             }
         });
         query.execute(paramsArr);
 
 
+    }
+
+    private void calc() {
+        PerformQuery query = new PerformQuery(this, "performGetUsersFromTable", new PerformQuery.AsyncResponse() {
+            @Override
+            public void processFinish(String response) {
+                response = response.trim();
+                ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
+                calculateScore(users);
+                errorGamelist.setText("");
+
+            }
+        });
+        query.execute(tableName);
     }
 
     private boolean shouldBeLocked(String dateString) {
@@ -284,21 +288,9 @@ public class GameList extends AppCompatActivity {
 
     public void CalculateScoreClick(View view) {
 
-
-        PerformQuery query = new PerformQuery(this, "getAllUsers", new PerformQuery.AsyncResponse() {
-            @Override
-            public void processFinish(String response) {
-                response = response.trim();
-                ArrayList<String> users = response.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(response.split(",")));
-                calculateScore(users);
-                errorGamelist.setText("");
-                Intent intent = new Intent(GameList.this, RecordsPageActivity.class);
-                intent.putExtra(RecordsPageActivity.EXTRA_INFO, tableName);
-                startActivity(intent);
-            }
-        });
-        query.execute(UsersList.USERS_TABLE);
-
+        Intent intent = new Intent(GameList.this, RecordsPageActivity.class);
+        intent.putExtra(RecordsPageActivity.EXTRA_INFO, tableName);
+        startActivity(intent);
     }
 
     private void calculateScore(final ArrayList<String> users) {
@@ -340,7 +332,7 @@ public class GameList extends AppCompatActivity {
             String[] line = lockedGames[i].split(",");
             String id = line[0];
 
-            if  (userBets.get(id).equals(line[Globals.REAL_SCORE_COLUMN_INDEX])) {
+            if (userBets.get(id).equals(line[Globals.REAL_SCORE_COLUMN_INDEX])) {
                 double d = Double.parseDouble(line[Integer.parseInt(line[Globals.REAL_SCORE_COLUMN_INDEX]) + (Globals.HOME_TEAM_WIN_RATE_COLUMN_INDEX - 1)]);
                 sum += d - 1;
             }
