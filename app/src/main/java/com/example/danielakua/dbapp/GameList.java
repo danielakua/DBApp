@@ -220,10 +220,16 @@ public class GameList extends AppCompatActivity {
         ArrayList<String> params = new ArrayList<>();
         params.add(tableName);
         params.add(LoginPage.sharedPref.getString("username", ""));
+        boolean isAdmin = LoginPage.sharedPref.getString("username", "").equals("admin");
 
         for (int i = 0; i < presentedMatches.size(); i++) {
-            params.add(presentedMatches.get(i).split(",")[0]);
-            params.add(presentedBets.get(i));
+            if (!isAdmin && presentedMatches.get(i).split(",")[Globals.LOCKED_COLUMN_INDEX].equals("0") && shouldBeLocked(presentedMatches.get(i).split(",")[Globals.DATE_COLUMN_INDEX])) {
+                params.add(presentedMatches.get(i).split(",")[0]);
+                params.add(presentedMatches.get(i).split(",")[Integer.parseInt(userIndex)]);
+            } else {
+                params.add(presentedMatches.get(i).split(",")[0]);
+                params.add(presentedBets.get(i));
+            }
         }
 
         for (int i = 0; i < matches.size(); i++) {
